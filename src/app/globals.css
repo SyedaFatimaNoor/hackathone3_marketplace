@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* src/styles/globals.css */  
+@font-face {  
+  font-family: 'Satoshi';  
+  src: url('/fonts/Satoshi-Regular.otf') format('opentype'); 
+  font-weight: 400; /* Regular */  
+  font-style: normal;  
+}  
+@font-face {  
+  font-family: 'Satoshi';  
+  src: url('/fonts/Satoshi-Bold.otf') format('opentype');  
+  font-weight: 700; /* Bold */  
+  font-style: normal;  
+}  
+@font-face {  
+  font-family: 'Satoshi';  
+  src: url('/fonts/Satoshi-Italic.otf') format('opentype');  
+  font-weight: 400;  
+  font-style: italic;  
+}  
+@font-face {  
+  font-family: 'Satoshi';  
+  src: url('/fonts/Satoshi-BoldItalic.otf') format('opentype');  
+  font-weight: 700;  
+  font-style: italic;  
+}  
+@font-face {  
+  font-family: 'Satoshi';  
+  src: url('/fonts/Satoshi-Light.otf') format('opentype');  
+  font-weight: 300; /* Light */  
+  font-style: normal;  
+}  
+@font-face {  
+  font-family: 'ClashDisplay';  
+  src: url('/fonts/ClashDisplay-Regular.otf') format('opentype');  
+  font-weight: 400;  
+  font-style: normal;  
+}  
+@font-face {  
+  font-family: 'ClashDisplay';  
+  src: url('/fonts/ClashDisplay-Bold.otf') format('opentype');  
+  font-weight: 700;  
+  font-style: normal;  
+}  
+@font-face {  
+  font-family: 'ClashDisplay';  
+  src: url('/fonts/ClashDisplay-Semibold.otf') format('opentype');  
+  font-weight: 600;  
+  font-style: normal;  
+}  
+@font-face {  
+  font-family: 'ClashDisplay';  
+  src: url('/fonts/ClashDisplay-Light.otf') format('opentype');  
+  font-weight: 300;  
+  font-style: normal;  
+}  
+ 
+ 
+body {  
+  font-family: 'Satoshi', sans-serif;  
+}  
