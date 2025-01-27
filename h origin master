@@ -1,0 +1,11 @@
+[33mcommit d80ec4f766ef7c6151a497f9082733284240e52b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Mon Jan 27 18:57:19 2025 +0500
+
+    Add .env to .gitignore
+
+[33mcommit cc2366a096a730df014b3f4583e57b1b6f0763df[m
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Sat Jan 18 11:43:52 2025 +0500
+
+    Initial commit from Create Next App
