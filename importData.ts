@@ -1,4 +1,4 @@
-  import axios from 'axios';
+import axios from 'axios';
   import { client } from './sanityClient.js';
   import slugify from 'slugify';
 
@@ -7,7 +7,7 @@
     try {
       // Fetch the image from the URL and convert it to a buffer
       const response = await axios.get(imageUrl, { responseType: 'arraybuffer',timeout: 10000 });
-      const buffer = Buffer.from(response.data);
+      const buffer = Buffer.from(response.data as ArrayBuffer); // Ensure the type is ArrayBuffer
 
       // Upload the image to Sanity
       const asset = await client.assets.upload('image', buffer, {
