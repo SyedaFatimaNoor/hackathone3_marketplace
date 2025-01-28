@@ -1,5 +1,4 @@
-// sanityClient.ts
-import { createClient } from '@sanity/client';
+import sanityClient from '@sanity/client';
 import * as dotenv from 'dotenv' // Changed import syntax
 
 // Initialize dotenv
@@ -10,10 +9,10 @@ if (!process.env.SANITY_ACCESS_TOKEN) {
   throw new Error('SANITY_ACCESS_TOKEN is not set in environment variables');
 }
 
-export const client = createClient({
-  projectId: "xrz0ku9t",
-  dataset: 'production',
-  apiVersion: '2024-01-04',
-  useCdn: false,
-  token: process.env.SANITY_ACCESS_TOKEN,
+const client = sanityClient({
+    projectId: 'your_project_id',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+    useCdn: true,
 });
+
+export default client;

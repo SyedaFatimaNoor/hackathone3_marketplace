@@ -17,18 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-    <html lang="en" className="overflow-x-hidden">
-      <body className="overflow-x-hidden">
-        <LanguageProvider>
-          <CartProvider>  
-            {children}
-            <Toaster /> 
-          </CartProvider>
-        </LanguageProvider>
-        <BackToTop />
-      </body>
-    </html>
+    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+      <html lang="en" className="overflow-x-hidden">
+        <body className="overflow-x-hidden">
+          <LanguageProvider>
+            <CartProvider>  
+              {children}
+              <Toaster /> 
+            </CartProvider>
+          </LanguageProvider>
+          <BackToTop />
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
