@@ -1,0 +1,42 @@
+[33mcommit d9137adc959a3e7cc4ad5ca18a4a48f29bf1b7b0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Merge: 2bd7254 ee68419
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Tue Jan 28 14:37:57 2025 +0500
+
+    Remove sensitive information from .env file
+
+[33mcommit 2bd7254b3e9758f508f1d1868f43387f0e0506cd[m
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Tue Jan 28 14:34:00 2025 +0500
+
+    Add Next.js project files
+
+[33mcommit 245510bdc8cd07ac0dfd7f03e3031ebef9657d5e[m
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Mon Jan 27 19:00:13 2025 +0500
+
+    Initial commit of Next.js project
+
+[33mcommit d80ec4f766ef7c6151a497f9082733284240e52b[m
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Mon Jan 27 18:57:19 2025 +0500
+
+    Add .env to .gitignore
+
+[33mcommit cc2366a096a730df014b3f4583e57b1b6f0763df[m
+Author: Syeda Noor ul ain fatima <syedanoor610@gmail.com>
+Date:   Sat Jan 18 11:43:52 2025 +0500
+
+    Initial commit from Create Next App
+
+[33mcommit ee68419a628dee3e0357088befab66b93456b73d[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Syeda Noor ul ain fatima <166501745+SyedaFatimaNoor@users.noreply.github.com>
+Date:   Fri Jan 17 08:16:11 2025 +0500
+
+    Add files via upload
+
+[33mcommit c6634259a07223895b516f87d9903d13eb57cc90[m
+Author: Syeda Noor ul ain fatima <166501745+SyedaFatimaNoor@users.noreply.github.com>
+Date:   Fri Jan 17 08:13:50 2025 +0500
+
+    Initial commit
