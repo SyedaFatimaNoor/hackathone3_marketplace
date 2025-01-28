@@ -7,7 +7,7 @@ async function uploadImageToSanity(imageUrl: string): Promise<string|null> {
   try {
     // Fetch the image from the URL and convert it to a buffer
     const response = await axios.get(imageUrl, { responseType: 'arraybuffer',timeout: 10000 });
-    const buffer = Buffer.from(response.data as ArrayBuffer); // Ensure the type is ArrayBuffer
+    const buffer = Buffer.from(new Uint8Array(response.data as ArrayBuffer)); // Ensure the type is ArrayBuffer
 
     // Upload the image to Sanity
     const asset = await client.assets.upload('image', buffer, {
