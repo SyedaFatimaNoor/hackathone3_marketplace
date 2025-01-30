@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.client = void 0;
-// sanityClient.js
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const { createClient } = require('@sanity/client');
+import { createClient } from '@sanity/client';
 
 const client = createClient({
   projectId: "xrz0ku9t",
@@ -14,4 +11,4 @@ const client = createClient({
   token: process.env.SANITY_ACCESS_TOKEN,
 });
 
-module.exports = { client };
+export default client;

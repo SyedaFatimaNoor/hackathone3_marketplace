@@ -18,8 +18,8 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-      <html lang="en" className="overflow-x-hidden">
-        <body className="overflow-x-hidden">
+      <html lang="en">
+        <body>
           <LanguageProvider>
             <CartProvider>  
               {children}
