@@ -10,16 +10,17 @@ interface ProductCardProps {
   image: string;
   title: string;
   price: number;
+  category: string;
 }
 
-const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
-  const { addProductToCart } = useCart();
+const ProductCard = ({ id, image, title, price, category }: ProductCardProps) => {
+  const { addToCart } = useCart();
   const router = useRouter();
 
   const handleAddToCart = () => {
     try {
       const cartItem = {
-        id: parseInt(id),
+        id,
         image,
         title,
         description: '',
@@ -27,9 +28,8 @@ const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
         quantity: 1,
       };
       
-      addProductToCart(cartItem);
+      addToCart(cartItem);
       toast.success(`${title} has been added to your cart!`);
-      router.push('/checkout'); // Navigate to checkout page
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');

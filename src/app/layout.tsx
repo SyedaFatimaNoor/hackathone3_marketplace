@@ -1,10 +1,9 @@
-import BackToTop from "@/components/BackToTop";
 import type { Metadata } from "next";
 import "./globals.css";
+import BackToTop from "@/components/BackToTop";
 import { CartProvider } from "@/context/CartContext";  
 import { LanguageProvider } from "@/context/LanguageContext";  
 import { Toaster } from 'sonner';  
-import { ClerkProvider } from "@clerk/nextjs"
 
 export const metadata: Metadata = {  
   title: "Avion - Your One-Stop E-Commerce Shop",  
@@ -17,18 +16,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-      <html lang="en">
-        <body>
-          <LanguageProvider>
-            <CartProvider>  
-              {children}
-              <Toaster /> 
-            </CartProvider>
-          </LanguageProvider>
-          <BackToTop />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body>
+        <LanguageProvider>
+          <CartProvider>
+            {children}
+            <BackToTop />
+            <Toaster />
+          </CartProvider>
+        </LanguageProvider>
+      </body>
+    </html>
   );
 }

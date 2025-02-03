@@ -5,15 +5,21 @@ export const product = defineType({
     title: "Product",
     type: "document",
     fields: [
-        // defineField({
-        //     name:"category",
-        //     title:"Category",
-        //     type:"reference",
-        //     to:[{
-        //         type:"category"
-        //     }]
-        // }
-        // ),
+        defineField({
+            name: "category",
+            title: "Category",
+            type: "string",
+            options: {
+                list: [
+                    "Furniture",
+                    "Home Decor",
+                    "Styles or Themes",
+                    "Functionality",
+                    "Material"
+                ]
+            },
+            validation: (rule) => rule.required()
+        }),
         defineField({
             name: "name",
             title: "Title",

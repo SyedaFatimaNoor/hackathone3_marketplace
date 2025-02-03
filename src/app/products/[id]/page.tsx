@@ -16,7 +16,7 @@ export default function SingleProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1); // State for quantity
-  const { addProductToCart } = useCart(); // Get the addProductToCart function from context
+  const { addToCart } = useCart(); // Get the addToCart function from context
   const [notification, setNotification] = useState<string | null>(null); // State for notification
 
   useEffect(() => {
@@ -47,8 +47,8 @@ export default function SingleProductPage() {
 
   const handleAddToCart = () => {
     if (product) {
-      addProductToCart({
-        id: parseInt(product._id) || 0, // Convert to number or use 0 as fallback
+      addToCart({
+        id: product._id || "0", // Keep as string
         image: product.image ? urlFor(product.image).url() : "",
         title: product.name,
         description: product.description || "",

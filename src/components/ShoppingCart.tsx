@@ -9,9 +9,9 @@ const ShoppingCart = () => {
   const { cartItems, removeProductFromCart, increaseQuantity, decreaseQuantity } = useCart();  
   const router = useRouter();  
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
 
-  const handleDecreaseQuantity = (id: number) => {
+  const handleDecreaseQuantity = (id: string) => {
     const item = cartItems.find((item) => item.id === id);
     if (item && item.quantity === 1) {
       removeProductFromCart(id);
@@ -21,7 +21,7 @@ const ShoppingCart = () => {
     }
   };
 
-  const handleRemoveProduct = (id: number, title: string) => {
+  const handleRemoveProduct = (id: string, title: string) => {
     removeProductFromCart(id);
     toast.success(`${title} has been removed from your cart!`);  
   };
@@ -57,7 +57,6 @@ const ShoppingCart = () => {
                   <h2 style={{ fontFamily: "ClashDisplay" }} className="text-lg font-normal text-[#2A254B]">
                     {item.title}
                   </h2>
-                  <p className="text-sm text-[#505977]">{item.description}</p>
                   <span className="text-sm font-medium text-[#2A254B]">£{item.price}</span>
                 </div>
               </div>

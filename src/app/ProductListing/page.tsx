@@ -5,20 +5,31 @@ import FilterSection from "@/components/FilterSection";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import { client } from "@/sanity/lib/client";
-import { Product } from "types/products";
 import { allProducts } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 
+interface Product {
+  id: string;
+  image: string;
+  title: string;
+  price: number;
+  category: string;
+}
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(6);  
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string>('');
 
   useEffect(() => {
     async function fetchProducts() {
       try {
         const fetchedProducts: Product[] = await client.fetch(allProducts);
         setProducts(fetchedProducts);
+        setFilteredProducts(fetchedProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -29,8 +40,38 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
+  const handleCategoryFilter = (category: string) => {
+    setSelectedCategory(category === selectedCategory ? '' : category);
+  };
+
+  const handlePriceFilter = (range: string) => {
+    setSelectedPriceRange(range === selectedPriceRange ? '' : range);
+  };
+
+  useEffect(() => {
+    let filtered = [...products];
+
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+
+    if (selectedPriceRange) {
+      const [min, max] = selectedPriceRange.split('-').map(Number);
+      filtered = filtered.filter(product => {
+        const price = product.price;
+        if (max) {
+          return price >= min && price <= max;
+        }
+        return price >= min;
+      });
+    }
+
+    setFilteredProducts(filtered);
+    setVisibleCount(6); // Reset visible count when filters change
+  }, [selectedCategory, selectedPriceRange, products]);
+
   const loadMoreProducts = () => {
-    setVisibleCount((prevCount) => prevCount + 6); 
+    setVisibleCount((prevCount) => prevCount + 6);
   };
 
   return (
@@ -56,7 +97,12 @@ export default function ProductsPage() {
         <div className="flex flex-col lg:flex-row">
           {/* Filters */}
           <div className="lg:w-[385px] border-r border-[#DBDBDB]">
-            <FilterSection />
+            <FilterSection 
+              selectedCategory={selectedCategory}
+              selectedPriceRange={selectedPriceRange}
+              onCategoryChange={handleCategoryFilter}
+              onPriceChange={handlePriceFilter}
+            />
           </div>
 
           {/* Products Grid */}
@@ -65,20 +111,21 @@ export default function ProductsPage() {
               <div className="text-center">Loading...</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {products.slice(0, visibleCount).map((product) => (
-                 <ProductCard
-                    key={product._id}
-                    id={product._id} 
+                {filteredProducts.slice(0, visibleCount).map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id} 
                     image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
-                    title={product.name}
+                    title={product.title}
                     price={product.price}
-               />
+                    category={product.category}
+                  />
                 ))}
               </div>
             )}
 
             {/* Load More Button */}
-            {visibleCount < products.length && (
+            {visibleCount < filteredProducts.length && (
               <div className="flex justify-center mt-12">
                 <button
                   className="px-8 py-4 border border-[#2A254B] text-[#2A254B] hover:bg-[#2A254B] hover:text-white transition duration-200"
