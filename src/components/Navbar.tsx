@@ -7,7 +7,6 @@ import { useCart } from '@/context/CartContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { client, urlFor } from "@/sanity/lib/client";
-import { Product } from "types/products";
 import Image from 'next/image';
 
 interface SearchSuggestion {
