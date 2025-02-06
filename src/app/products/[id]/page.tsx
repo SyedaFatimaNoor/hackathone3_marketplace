@@ -8,27 +8,38 @@ import { urlFor } from "@/sanity/lib/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { useCart } from '@/context/CartContext'; // Import the useCart hook
-import Notification from '@/components/Notification'; // Import the Notification component
+import { useCart } from '@/context/CartContext'; 
+import Notification from '@/components/Notification'; 
 
 export default function SingleProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1); // State for quantity
-  const { addToCart } = useCart(); // Get the addToCart function from context
-  const [notification, setNotification] = useState<string | null>(null); // State for notification
+  const [error, setError] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1); 
+  const { addToCart } = useCart(); 
+  const [notification, setNotification] = useState<string | null>(null); 
 
   useEffect(() => {
     async function fetchProduct() {
       try {
+        if (!id) {
+          throw new Error("No product ID provided");
+        }
+
         const fetchedProduct: Product = await client.fetch(
           `*[_type == "product" && _id == $id][0]`,
           { id }
         );
+
+        if (!fetchedProduct) {
+          throw new Error("Product not found");
+        }
+
         setProduct(fetchedProduct);
       } catch (error) {
         console.error("Error fetching product:", error);
+        setError(error instanceof Error ? error.message : "An error occurred");
       } finally {
         setIsLoading(false);
       }
@@ -42,13 +53,13 @@ export default function SingleProductPage() {
   };
 
   const decreaseQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent quantity from going below 1
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); 
   };
 
   const handleAddToCart = () => {
     if (product) {
       addToCart({
-        id: product._id || "0", // Keep as string
+        id: product._id || "0", 
         image: product.image ? urlFor(product.image).url() : "",
         title: product.name,
         description: product.description || "",
@@ -63,13 +74,9 @@ export default function SingleProductPage() {
     setNotification(null);
   };
 
-  if (isLoading) {
-    return <div className="text-center">Loading...</div>;
-  }
-
-  if (!product) {
-    return <div className="text-center">Product not found.</div>;
-  }
+  if (isLoading) return <div>Loading product...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!product) return <div>No product found</div>;
 
   return (
     <div className="min-h-screen bg-white">

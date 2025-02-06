@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,7 +9,7 @@ import { Product } from "types/products";
 import { urlFor } from "@/sanity/lib/image";
 import { useRouter } from "next/navigation";
 
-export default function SearchResults() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('q')?.trim().toLowerCase() || '';
@@ -56,20 +56,14 @@ export default function SearchResults() {
     fetchSearchResults();
   }, [query, router]);
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <div className="flex-grow container mx-auto px-4 py-8">
-        {isLoading ? (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-            <p className="ml-4 text-xl">Searching...</p>
-          </div>
-        ) : error ? (
-          <div className="text-center text-red-500 text-xl">
-            {error}
-          </div>
-        ) : products.length === 0 ? (
+        {products.length === 0 ? (
           <div className="text-center text-gray-500 text-xl">
             No products found
           </div>
@@ -90,4 +84,12 @@ export default function SearchResults() {
       <Footer />
     </div>
   );
+}
+
+export default function SearchResults() {
+  return (
+    <Suspense fallback={<div>Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
+  )
 }
