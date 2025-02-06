@@ -42,7 +42,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ amount, onPaymentSuccess, c
         throw new Error('Card Element not found');
       }
 
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
+      const { error } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
       });

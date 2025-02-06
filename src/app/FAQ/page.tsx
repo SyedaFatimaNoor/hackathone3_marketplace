@@ -18,7 +18,7 @@ export default function FAQPage() {
             </h1>
             <p className="text-lg opacity-90 max-w-2xl">
               Find answers to common questions about our products, services, and policies. 
-              Can't find what you're looking for? Contact our support team.
+              Can&apos;t find what you&apos;re looking for? Contact our support team.
             </p>
           </div>
         </div>

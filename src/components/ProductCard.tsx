@@ -3,19 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   id: string;
   image: string;
   title: string;
   price: number;
-  category?: string; 
 }
 
-const ProductCard = ({ id, image, title, price, category }: ProductCardProps) => {
+const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
   const { addToCart } = useCart();
-  const router = useRouter();
 
   const handleAddToCart = () => {
     try {

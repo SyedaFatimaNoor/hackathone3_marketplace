@@ -5,9 +5,10 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import { useCart } from '@/context/CartContext';  
 import LanguageSwitcher from '@/components/LanguageSwitcher';
-import { SignInButton, UserButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { client, urlFor } from "@/sanity/lib/client";
 import { Product } from "types/products";
+import Image from 'next/image';
 
 const Navbar = () => {
   const { getTotalItems } = useCart();  // Get total items from cart
@@ -19,7 +20,7 @@ const Navbar = () => {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
   const router = useRouter();
-  const { isSignedIn } = useUser();
+  // const { isSignedIn } = useUser();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearchToggle = () => {
@@ -173,9 +174,6 @@ const Navbar = () => {
           <Link href="/About" className="text-[#726E8D] hover:text-[#2A254B] text-base">
             About
           </Link>
-          <Link href="/Aboutv2" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            About V2
-          </Link>
           <Link href="/ProductListing" className="text-[#726E8D] hover:text-[#2A254B] text-base">
             Product Listing
           </Link>
@@ -248,9 +246,6 @@ const Navbar = () => {
         <div className="flex justify-center space-x-4 md:space-x-6 lg:space-x-8 py-4 px-8 lg:px-16">
           <Link href="/About" className="text-[#726E8D] hover:text-[#2A254B] text-base">
             About
-          </Link>
-          <Link href="/Aboutv2" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            About V2
           </Link>
           <Link href="/ProductListing" className="text-[#726E8D] hover:text-[#2A254B] text-base">
             Product Listing
@@ -353,7 +348,7 @@ const Navbar = () => {
                   onClick={() => handleSuggestionClick(suggestion)}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
                 >
-                  <img 
+                  <Image 
                     src={suggestion.image && suggestion.image.asset && suggestion.image.asset._ref 
                       ? urlFor(suggestion.image.asset).width(100).height(100).url() 
                       : '/placeholder-image.png'} 

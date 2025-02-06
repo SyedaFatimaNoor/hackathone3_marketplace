@@ -9,7 +9,12 @@ interface Product {
   _id: string;
   title: string;
   price: number;
-  image: any;
+  image: {
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+  };
   category: string;
 }
 

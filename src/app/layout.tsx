@@ -3,8 +3,8 @@ import "./globals.css";
 import BackToTop from "@/components/BackToTop";
 import { CartProvider } from "@/context/CartContext";  
 import { LanguageProvider } from "@/context/LanguageContext";  
-import { Toaster, toast } from 'sonner';  
-import { ClerkProvider, SignedIn } from '@clerk/nextjs'
+import { Toaster } from 'sonner';  
+import { ClerkProvider } from '@clerk/nextjs'
 import { dark } from "@clerk/themes";
 import ClerkAuthHandler from '@/components/ClerkAuthHandler';
 
