@@ -77,12 +77,11 @@ export default function SearchResults() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product) => (
               <ProductCard
-                key={product._id}
+                key={product._id}  
                 id={product._id}  
                 image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
                 title={product.name}
                 price={product.price}
-                category={product.category}
               />
             ))}
           </div>
