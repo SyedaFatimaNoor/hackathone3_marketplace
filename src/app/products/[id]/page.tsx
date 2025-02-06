@@ -1,28 +1,32 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { Product } from "types/products";
 import { urlFor } from "@/sanity/lib/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { useCart } from '@/context/CartContext'; 
-import Notification from '@/components/Notification'; 
+import { useCart } from '@/context/CartContext';
+import Notification from '@/components/Notification';
 
-export default function SingleProductPage() {
-  const { id } = useParams();
+type SingleProductPageProps = {
+  params: { id: string }
+}
+
+export default function SingleProductPage({ params }: SingleProductPageProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1); 
-  const { addToCart } = useCart(); 
-  const [notification, setNotification] = useState<string | null>(null); 
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const [notification, setNotification] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchProduct() {
       try {
+        const id = params.id;
+        
         if (!id) {
           throw new Error("No product ID provided");
         }
@@ -37,41 +41,37 @@ export default function SingleProductPage() {
         }
 
         setProduct(fetchedProduct);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-        setError(error instanceof Error ? error.message : "An error occurred");
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchProduct();
-  }, [id]);
+  }, [params.id]);
 
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
   };
 
   const decreaseQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); 
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
   const handleAddToCart = () => {
     if (product) {
       addToCart({
-        id: product._id || "0", 
-        image: product.image ? urlFor(product.image).url() : "",
+        id: product._id || "0",
         title: product.name,
-        description: product.description || "",
         price: product.price,
+        image: product.image?.asset?._ref ? urlFor(product.image.asset._ref).url() : "/placeholder.svg",
         quantity,
+        description: product.description || ""
       });
-      setNotification(`${product.name} has been added to your cart!`);
+      setNotification(`${quantity} ${product.name} added to cart`);
     }
-  };
-
-  const closeNotification = () => {
-    setNotification(null);
   };
 
   if (isLoading) return <div>Loading product...</div>;
@@ -86,7 +86,7 @@ export default function SingleProductPage() {
           {/* Product Image */}
           <div className="flex-1">
             <Image
-              src={product.image ? urlFor(product.image).url() : "/placeholder.svg"}
+              src={product.image?.asset?._ref ? urlFor(product.image.asset._ref).url() : "/placeholder.svg"}
               alt={product.name}
               width={500}
               height={500}
@@ -152,8 +152,7 @@ export default function SingleProductPage() {
         </div>
       </div>
       <Footer />
-      {notification && <Notification message={notification} onClose={closeNotification} />}
+      {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
     </div>
-
   );
 }
