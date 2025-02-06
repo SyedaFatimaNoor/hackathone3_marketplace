@@ -1,9 +1,19 @@
 import Banner from "@/components/Banner";
 import Navbar from "@/components/Navbar";
 import Contact from "@/components/Contact";
-import FeaturesSection from "@/components/FeaturesSection";
-import JoinClubSection from "@/components/JoinClubSection";
 import Footer from "@/components/Footer";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact Us - Your Company Name',
+  description: 'Get in touch with us. We\'d love to hear from you!',
+  keywords: ['contact', 'support', 'reach out'],
+  openGraph: {
+    title: 'Contact Us',
+    description: 'Connect with our team',
+    type: 'website',
+  }
+};
 
 export default function Home() {
     return (
@@ -23,9 +33,9 @@ export default function Home() {
             Contact Us
           </h1>
         </div>
-        <Contact />
-        <JoinClubSection />
-        <FeaturesSection />
+        <div className="w-full">
+          <Contact />
+        </div>
         <Footer />
       </>
     );

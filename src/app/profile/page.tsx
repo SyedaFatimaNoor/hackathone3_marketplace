@@ -1,114 +1,131 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+"use client";
+import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
+import Link from "next/link";
+import { 
+  ShoppingBag, 
+  Heart, 
+  Settings, 
+  CreditCard, 
+  MapPin, 
+  Bell, 
+  LogOut 
+} from "lucide-react";
+import { SignOutButton } from "@clerk/nextjs";
 
-export default async function ProfilePage() {
-  const { userId } = await auth();
-  const user = await currentUser();
+export default function ProfilePage() {
+  const { user } = useUser();
 
-  if (!userId || !user) {
-    redirect("/login");
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <p className="text-2xl text-gray-600">Please log in to view your profile</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+        {/* Profile Header */}
         <div 
-          style={{ fontFamily: "ClashDisplay" }} 
-          className="bg-[#2A254B] p-6"
+          className="bg-gradient-to-r from-[#2A254B] to-[#3A355B] p-8 text-white flex items-center space-x-6"
         >
-          <h1 className="text-3xl font-bold text-center text-white">
-            User Profile
-          </h1>
+          <Image 
+            src={user.imageUrl} 
+            alt="Profile Picture" 
+            width={120} 
+            height={120} 
+            className="rounded-full border-4 border-white shadow-lg"
+          />
+          <div>
+            <h1 className="text-3xl font-bold">{user.fullName}</h1>
+            <p className="text-gray-300">{user.emailAddresses[0].emailAddress}</p>
+          </div>
         </div>
 
-        <div className="p-8 space-y-6">
-          {/* Profile Picture */}
-          <div className="flex flex-col items-center space-y-4">
-            <Image 
-              src={user.imageUrl} 
-              alt="Profile Picture" 
-              width={150} 
-              height={150} 
-              className="rounded-full border-4 border-[#2A254B] shadow-lg"
-            />
-            <button 
-              className="px-4 py-2 bg-[#2A254B] text-white rounded-full 
-              hover:bg-[#3A355B] transition"
-            >
-              Change Profile Picture
+        {/* Profile Actions */}
+        <div className="p-8 grid md:grid-cols-2 gap-6">
+          <ProfileActionCard 
+            icon={<ShoppingBag className="w-6 h-6 text-[#2A254B]" />} 
+            title="My Orders" 
+            description="View and track your recent purchases"
+            href="/orders"
+          />
+          <ProfileActionCard 
+            icon={<Heart className="w-6 h-6 text-[#2A254B]" />} 
+            title="Wishlist" 
+            description="Manage your favorite items"
+            href="/wishlist"
+          />
+          <ProfileActionCard 
+            icon={<Settings className="w-6 h-6 text-[#2A254B]" />} 
+            title="Account Settings" 
+            description="Manage your profile and preferences"
+            href="/account-settings"
+          />
+          <ProfileActionCard 
+            icon={<CreditCard className="w-6 h-6 text-[#2A254B]" />} 
+            title="Payment Methods" 
+            description="Add or remove payment options"
+            href="/payment-methods"
+          />
+          <ProfileActionCard 
+            icon={<MapPin className="w-6 h-6 text-[#2A254B]" />} 
+            title="Addresses" 
+            description="Manage shipping addresses"
+            href="/addresses"
+          />
+          <ProfileActionCard 
+            icon={<Bell className="w-6 h-6 text-[#2A254B]" />} 
+            title="Notifications" 
+            description="Control your notification preferences"
+            href="/notifications"
+          />
+        </div>
+
+        {/* Logout Button */}
+        <div className="p-8 border-t text-center">
+          <SignOutButton>
+            <button className="bg-red-50 text-red-600 hover:bg-red-100 px-6 py-3 rounded-lg flex items-center mx-auto space-x-2">
+              <LogOut className="w-5 h-5" />
+              <span>Logout</span>
             </button>
-          </div>
-
-          {/* User Details */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 font-bold mb-2">
-                First Name
-              </label>
-              <input 
-                type="text" 
-                defaultValue={user.firstName || ''} 
-                className="w-full px-4 py-2 border rounded-lg 
-                focus:outline-none focus:ring-2 focus:ring-[#2A254B]"
-                placeholder="Enter your first name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-bold mb-2">
-                Last Name
-              </label>
-              <input 
-                type="text" 
-                defaultValue={user.lastName || ''} 
-                className="w-full px-4 py-2 border rounded-lg 
-                focus:outline-none focus:ring-2 focus:ring-[#2A254B]"
-                placeholder="Enter your last name"
-              />
-            </div>
-          </div>
-
-          {/* Contact Information */}
-          <div>
-            <label className="block text-gray-700 font-bold mb-2">
-              Email Address
-            </label>
-            <input 
-              type="email" 
-              value={user.emailAddresses[0]?.emailAddress || ''} 
-              disabled 
-              className="w-full px-4 py-2 border rounded-lg 
-              bg-gray-100 cursor-not-allowed"
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="space-y-4">
-            <button 
-              className="w-full px-6 py-3 bg-[#2A254B] text-white 
-              rounded-full hover:bg-[#3A355B] transition"
-            >
-              Save Changes
-            </button>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <button 
-                className="px-6 py-3 bg-red-500 text-white 
-                rounded-full hover:bg-red-600 transition"
-              >
-                Delete Account
-              </button>
-              <button 
-                className="px-6 py-3 border border-[#2A254B] 
-                text-[#2A254B] rounded-full hover:bg-gray-100 transition"
-              >
-                Reset Password
-              </button>
-            </div>
-          </div>
+          </SignOutButton>
         </div>
       </div>
     </div>
+  );
+}
+
+// Reusable Profile Action Card Component
+function ProfileActionCard({ 
+  icon, 
+  title, 
+  description, 
+  href 
+}: { 
+  icon: React.ReactNode, 
+  title: string, 
+  description: string, 
+  href: string 
+}) {
+  return (
+    <Link 
+      href={href} 
+      className="bg-gray-50 hover:bg-gray-100 p-6 rounded-xl transition-all duration-300 flex items-center space-x-4 group"
+    >
+      <div className="bg-white p-3 rounded-full shadow-md">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-[#2A254B] group-hover:text-[#3A355B]">
+          {title}
+        </h3>
+        <p className="text-gray-500 text-sm">{description}</p>
+      </div>
+    </Link>
   );
 }

@@ -10,7 +10,7 @@ interface ProductCardProps {
   image: string;
   title: string;
   price: number;
-  category: string;
+  category?: string; 
 }
 
 const ProductCard = ({ id, image, title, price, category }: ProductCardProps) => {

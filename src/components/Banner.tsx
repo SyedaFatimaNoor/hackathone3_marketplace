@@ -12,27 +12,26 @@ const Banner = () => {
 
   return (
     isVisible && (
-      <div className="bg-[#2a254b] text-white text-sm flex justify-between items-center px-4 py-2">
-        <div className="flex items-center w-full">
+      <div className="bg-[#2a254b] text-white text-sm relative flex justify-between items-center px-4 py-2">
+        <div className="flex-grow flex items-center justify-center space-x-2">
           <Image
             src="/images/Delivery.png"
             alt="Delivery"
             width={20}
             height={20}
-            className="mr-2"
+            className="inline-block"
           />
-          <span className="flex-grow">
+          <span>
             Free delivery on all orders over €50 with code <strong>easter</strong> at checkout
           </span>
-          {/* Cross Button */}
-          <button
-            onClick={handleClose}
-            className="text-white bg-transparent border-none cursor-pointer"
-            aria-label="Close banner"
-          >
-            <X size={18} />
-          </button>
         </div>
+        <button
+          onClick={handleClose}
+          className="text-white bg-transparent border-none cursor-pointer"
+          aria-label="Close banner"
+        >
+          <X size={18} />
+        </button>
       </div>
     )
   );

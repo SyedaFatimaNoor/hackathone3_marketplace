@@ -147,5 +147,6 @@ export default function SingleProductPage() {
       <Footer />
       {notification && <Notification message={notification} onClose={closeNotification} />}
     </div>
+
   );
 }

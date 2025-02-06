@@ -3,7 +3,10 @@ import "./globals.css";
 import BackToTop from "@/components/BackToTop";
 import { CartProvider } from "@/context/CartContext";  
 import { LanguageProvider } from "@/context/LanguageContext";  
-import { Toaster } from 'sonner';  
+import { Toaster, toast } from 'sonner';  
+import { ClerkProvider, SignedIn } from '@clerk/nextjs'
+import { dark } from "@clerk/themes";
+import ClerkAuthHandler from '@/components/ClerkAuthHandler';
 
 export const metadata: Metadata = {  
   title: "Avion - Your One-Stop E-Commerce Shop",  
@@ -18,13 +21,29 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <LanguageProvider>
-          <CartProvider>
-            {children}
-            <BackToTop />
-            <Toaster />
-          </CartProvider>
-        </LanguageProvider>
+        <ClerkProvider
+          appearance={{
+            baseTheme: dark,
+            variables: {
+              colorPrimary: '#2A254B',
+            },
+            elements: {
+              formButtonPrimary: 'bg-[#2A254B] hover:bg-[#3A355B] text-white',
+              card: 'shadow-2xl'
+            }
+          }}
+          afterSignInUrl="/"
+          afterSignUpUrl="/"
+        >
+          <ClerkAuthHandler />
+          <LanguageProvider>
+            <CartProvider>
+                {children}
+              <BackToTop />
+              <Toaster richColors />
+            </CartProvider>
+          </LanguageProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
