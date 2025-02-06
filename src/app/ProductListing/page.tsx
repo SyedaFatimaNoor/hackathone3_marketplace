@@ -118,7 +118,6 @@ export default function ProductsPage() {
                     image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
                     title={product.title}
                     price={product.price}
-                    category={product.category}
                   />
                 ))}
               </div>
