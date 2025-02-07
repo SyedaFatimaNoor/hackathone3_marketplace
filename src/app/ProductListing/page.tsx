@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { client } from "@/sanity/lib/client";
 import { allProducts } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
+import { projectId, dataset, apiVersion } from "@/sanity/env";
 
 interface Product {
   id: string;
@@ -27,11 +28,18 @@ export default function ProductsPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
+        console.log('Sanity Config:', { projectId, dataset, apiVersion });
         const fetchedProducts: Product[] = await client.fetch(allProducts);
+        console.log('Fetched Products:', fetchedProducts);
         setProducts(fetchedProducts);
         setFilteredProducts(fetchedProducts);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Detailed Error fetching products:", {
+          error,
+          projectId,
+          dataset,
+          apiVersion
+        });
       } finally {
         setIsLoading(false);
       }
