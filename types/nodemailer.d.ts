@@ -7,6 +7,9 @@ declare module 'nodemailer' {
       user?: string;
       pass?: string;
     };
+    requireTLS?: boolean;
+    debug?: boolean;
+    logger?: boolean | object;
   }
 
   export interface SendMailOptions {
@@ -19,6 +22,7 @@ declare module 'nodemailer' {
 
   export interface Transporter {
     sendMail(options: SendMailOptions): Promise<any>;
+    verify(): Promise<true>;
   }
 
   export function createTransport(options: TransportOptions): Transporter;

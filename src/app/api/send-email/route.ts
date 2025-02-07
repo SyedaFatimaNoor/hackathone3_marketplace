@@ -37,20 +37,20 @@ export async function POST(request: NextRequest) {
   const transporter = nodemailer.createTransport({
     host: emailHost,
     port: emailPort,
-    secure: true, // Use SSL/TLS
+    secure: true, // Changed to true for SSL/TLS
     auth: {
       user: emailUser,
       pass: emailPass
     },
-    // Add these options for better reliability
-    tls: {
-      rejectUnauthorized: true
-    }
+    debug: true, // Enable debugging
+    logger: true // Enable logging
   });
 
   try {
-    // Verify transporter connection
-    await transporter.verify();
+    // More verbose verification
+    console.log('Attempting to verify SMTP connection...');
+    const verificationResult = await transporter.verify();
+    console.log('SMTP Connection verified:', verificationResult);
 
     // Send email
     const mailOptions = {
@@ -70,6 +70,14 @@ export async function POST(request: NextRequest) {
         <p><strong>Message:</strong> ${message}</p>
       `
     };
+
+    // Detailed logging for mail options
+    console.log('Mail Options:', {
+      from: `"Contact Form" <${fromEmail}>`,
+      to: ownerEmail,
+      replyTo: email,
+      subject: `New Contact Form Submission from ${name}`
+    });
 
     // Send mail and get result
     const info = await transporter.sendMail(mailOptions);
