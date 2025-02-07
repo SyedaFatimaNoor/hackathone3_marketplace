@@ -3,25 +3,25 @@ import Link from 'next/link';
 import { Search, ShoppingCart, CircleUserRound, Menu, ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import { useCart } from '@/context/CartContext';  
+import { useCart } from '@/context/CartContext';
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+import Image from 'next/image';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { client, urlFor } from "@/sanity/lib/client";
-import Image from 'next/image';
 
-interface SearchSuggestion {
+type SearchSuggestion = {
   _id: string;
   name: string;
   category?: string;
   image?: {
     _ref?: string;
     _type: 'image';
-  };
-}
+  }
+};
 
 const Navbar = () => {
-  const { getTotalItems } = useCart();  // Get total items from cart
-  const cartCount = getTotalItems(); // Calculate total items
+  const [cartCount, setCartCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);   
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,12 +29,16 @@ const Navbar = () => {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false);
   const router = useRouter();
-  // const { isSignedIn } = useUser();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { getTotalItems } = useCart();
+
+  useEffect(() => {
+    // Client-side only calculation
+    setCartCount(getTotalItems());
+  }, [getTotalItems]);
 
   const handleSearchToggle = () => {
     setIsSearchOpen(!isSearchOpen);
-    // Focus on search input when opened
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 100);
@@ -72,7 +76,6 @@ const Navbar = () => {
     const query = e.target.value;
     setSearchQuery(query);
     
-    // Debounce search suggestions
     const timerId = setTimeout(() => {
       fetchSearchSuggestions(query);
     }, 300);
@@ -91,7 +94,6 @@ const Navbar = () => {
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Close search on Escape key
     if (e.key === 'Escape') {
       setIsSearchOpen(false);
       setSearchQuery("");
@@ -100,7 +102,7 @@ const Navbar = () => {
   };
 
   const handleSuggestionClick = (suggestion: SearchSuggestion) => {
-    router.push(`/search?q=${encodeURIComponent(suggestion.name)}`);
+    router.push(`/products/${suggestion._id}`);
     setIsSearchOpen(false);
     setSearchQuery("");
     setSearchSuggestions([]);
@@ -131,7 +133,7 @@ const Navbar = () => {
   }, [isSearchOpen]);
 
   return (
-    <nav className="bg-white w-full relative">
+    <nav className="sticky top-0 z-50 bg-white shadow-sm">
       {/* Top Navigation */}
       <div className="w-full flex justify-between items-center px-4 md:px-8 lg:px-16 py-4 border-b">
         {/* Left Icon */}
@@ -357,13 +359,15 @@ const Navbar = () => {
                   onClick={() => handleSuggestionClick(suggestion)}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
                 >
-                  <Image 
-                    src={suggestion.image?._ref 
-                      ? urlFor({ asset: { _ref: suggestion.image._ref, _type: 'image' } }).width(100).height(100).url() 
-                      : '/placeholder-image.png'} 
-                    alt={suggestion.name} 
-                    className="w-10 h-10 mr-3 object-cover rounded"
-                  />
+                  {suggestion.image?._ref && (
+                    <Image 
+                      src={urlFor({ asset: { _ref: suggestion.image._ref, _type: 'image' } }).width(100).height(100).url()}
+                      alt={suggestion.name || 'Suggestion'} 
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 mr-3 object-cover rounded"
+                    />
+                  )}
                   <div>
                     <p className="text-sm font-medium">{suggestion.name}</p>
                     <p className="text-xs text-gray-500">{suggestion.category}</p>
@@ -376,6 +380,6 @@ const Navbar = () => {
       )}
     </nav>
   );
-}
+};
 
 export default Navbar;

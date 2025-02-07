@@ -1,62 +1,91 @@
-'use client';
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
+import { urlFor } from "@/sanity/lib/image";
+
+interface SanityImageObject {
+  _type: string;
+  _ref?: string;
+  asset?: {
+    _ref?: string;
+    _type: string;
+  };
+}
 
 interface ProductCardProps {
   id: string;
-  image: string;
+  image: string | SanityImageObject;
   title: string;
   price: number;
 }
 
 const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
+  const router = useRouter();
   const { addToCart } = useCart();
+
+  // Convert Sanity image object to URL
+  const getImageUrl = (img: string | SanityImageObject) => {
+    if (typeof img === 'string') return img;
+    
+    // Handle Sanity image object
+    return urlFor({ 
+      asset: img.asset || { _ref: img._ref, _type: 'image' } 
+    }).width(300).height(300).url();
+  };
 
   const handleAddToCart = () => {
     try {
       const cartItem = {
         id,
-        image,
+        image: getImageUrl(image),
         title,
         description: '',
         price,
-        quantity: 1,
+        quantity: 1
       };
-      
       addToCart(cartItem);
-      toast.success(`${title} has been added to your cart!`);
+      toast.success(`${title} added to cart`);
     } catch (error) {
-      console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');
     }
   };
 
+  const handleProductClick = () => {
+    router.push(`/products/${id}`);
+  };
+
   return (
-    <div className="flex flex-col gap-6 cursor-pointer group transition duration-300 hover:shadow-lg hover:scale-105">
-      <Link href={`/products/${id}`} passHref>
-        <div className="bg-[#F5F5F5] aspect-[4/5] overflow-hidden rounded-lg">
-          <Image
-            src={image}
-            alt={title}
-            width={500}
-            height={500}
-            className="w-full h-full object-cover transition duration-300 transform group-hover:scale-110"
+    <div onClick={handleProductClick} className="cursor-pointer block">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+        <div className="relative w-full pt-[100%]">
+          <Image 
+            src={getImageUrl(image)} 
+            alt={title} 
+            fill 
+            className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
           />
         </div>
-      </Link>
-      <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-normal text-[#2A254B]">{title}</h3>
-        <p className="text-lg text-[#2A254B]">£{price}</p>
-        <button 
-          onClick={handleAddToCart} 
-          className="mt-2 px-4 py-2 bg-[#2A254B] text-white rounded hover:bg-[#3a3475] transition-colors"
-        >
-          Add to Cart
-        </button>
+        <div className="p-4">
+          <h3 className="text-lg font-semibold text-gray-800 truncate">{title}</h3>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-xl font-bold text-gray-900">£{price.toFixed(2)}</p>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent navigation when adding to cart
+                handleAddToCart();
+              }} 
+              className="bg-[#2A254B] text-white px-3 py-1 rounded hover:bg-[#3a3475] transition"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
 export default ProductCard;

@@ -1,82 +1,75 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { Product } from "types/products";
 import { urlFor } from "@/sanity/lib/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { useCart } from '@/context/CartContext';
-import Notification from '@/components/Notification';
+import { useCart } from '@/context/CartContext'; // Import the useCart hook
+import Notification from '@/components/Notification'; // Import the Notification component
 
-type SingleProductPageProps = {
-  params: { id: string }
-}
-
-export default function SingleProductPage({ params }: SingleProductPageProps) {
+export default function SingleProductPage() {
+  const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useCart();
-  const [notification, setNotification] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1); // State for quantity
+  const { addToCart } = useCart(); // Get the addToCart function from context
+  const [notification, setNotification] = useState<string | null>(null); // State for notification
 
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const id = params.id;
-        
-        if (!id) {
-          throw new Error("No product ID provided");
-        }
-
         const fetchedProduct: Product = await client.fetch(
           `*[_type == "product" && _id == $id][0]`,
           { id }
         );
-
-        if (!fetchedProduct) {
-          throw new Error("Product not found");
-        }
-
         setProduct(fetchedProduct);
-      } catch (err) {
-        console.error("Error fetching product:", err);
-        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      } catch (error) {
+        console.error("Error fetching product:", error);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchProduct();
-  }, [params.id]);
+  }, [id]);
 
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
   };
 
   const decreaseQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent quantity from going below 1
   };
 
   const handleAddToCart = () => {
     if (product) {
       addToCart({
-        id: product._id || "0",
+        id: product._id || "0", // Keep as string
+        image: product.image ? urlFor(product.image).url() : "",
         title: product.name,
+        description: product.description || "",
         price: product.price,
-        image: product.image?.asset?._ref ? urlFor(product.image.asset._ref).url() : "/placeholder.svg",
         quantity,
-        description: product.description || ""
       });
-      setNotification(`${quantity} ${product.name} added to cart`);
+      setNotification(`${product.name} has been added to your cart!`);
     }
   };
 
-  if (isLoading) return <div>Loading product...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!product) return <div>No product found</div>;
+  const closeNotification = () => {
+    setNotification(null);
+  };
+
+  if (isLoading) {
+    return <div className="text-center">Loading...</div>;
+  }
+
+  if (!product) {
+    return <div className="text-center">Product not found.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -86,7 +79,7 @@ export default function SingleProductPage({ params }: SingleProductPageProps) {
           {/* Product Image */}
           <div className="flex-1">
             <Image
-              src={product.image?.asset?._ref ? urlFor(product.image.asset._ref).url() : "/placeholder.svg"}
+              src={product.image ? urlFor(product.image).url() : "/placeholder.svg"}
               alt={product.name}
               width={500}
               height={500}
@@ -152,7 +145,8 @@ export default function SingleProductPage({ params }: SingleProductPageProps) {
         </div>
       </div>
       <Footer />
-      {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
+      {notification && <Notification message={notification} onClose={closeNotification} />}
     </div>
+
   );
 }
