@@ -69,7 +69,7 @@ export default function SearchResults() {
         setIsLoading(false);
       }
     }, 300),
-    []
+    [client]
   );
 
   // Trigger search when query changes
@@ -82,7 +82,9 @@ export default function SearchResults() {
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
     const filtered = products.filter(product => 
-      product.category && product.category?.toLowerCase() === category.toLowerCase()
+      product.category && 
+      typeof product.category === 'string' && 
+      product.category.toLowerCase() === category.toLowerCase()
     );
     setFilteredProducts(filtered);
   };
@@ -103,14 +105,17 @@ export default function SearchResults() {
     router.replace('/search');
   };
 
-  const categories = useMemo(() => 
-    Array.from(new Set(
-      products
-        .map(p => p.category)
-        .filter((category): category is string => category !== undefined && category.trim() !== '')
-    )), 
-    [products]
-  );
+  const uniqueCategories = useMemo(() => {
+    const categories = products
+      .map((p: Product) => p.category)
+      .filter((category): category is string => 
+        category !== undefined && 
+        category !== null && 
+        typeof category === 'string' && 
+        category.trim() !== ''
+    );
+    return [...new Set(categories)];
+  }, [products]);
 
   if (isLoading) {
     return (
@@ -154,7 +159,7 @@ export default function SearchResults() {
           </h1>
           
           {/* Category Filter */}
-          {categories.length > 0 && (
+          {uniqueCategories.length > 0 && (
             <div className="relative group">
               <button 
                 className="bg-white shadow-md rounded-full p-2 hover:bg-gray-100 transition"
@@ -163,17 +168,17 @@ export default function SearchResults() {
                 <Filter className="h-6 w-6 text-gray-700" />
               </button>
               <div className="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-10">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => handleCategoryFilter(category)}
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
-                      selectedCategory === category ? 'bg-gray-200' : ''
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
+              {uniqueCategories.map((category) => (
+              <button
+                key={category}
+                onClick={() => handleCategoryFilter(category)}
+                className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
+                  selectedCategory === category ? 'bg-gray-200' : ''
+                }`}
+              >
+                {category}
+              </button>
+            ))}
                 {selectedCategory && (
                   <button
                     onClick={resetFilter}
