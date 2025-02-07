@@ -9,6 +9,7 @@ import { Product } from "types/products";
 import { urlFor } from "@/sanity/lib/image";
 import { Search, Filter, ShoppingBag, X } from 'lucide-react';
 import { debounce } from 'lodash';
+import { groq } from 'next-sanity';
 
 function SearchContent() {
   const router = useRouter();
@@ -35,9 +36,9 @@ function SearchContent() {
 
       try {
         const searchQuery = `*[_type == "product" && (
-          lower(name) match "*${searchTerm}*" || 
-          lower(category) match "*${searchTerm}*" || 
-          lower(description) match "*${searchTerm}*"
+          lower(name) match lower("${searchTerm}") ||
+          lower(category) match lower("${searchTerm}") || 
+          lower(description) match lower("${searchTerm}")
         )] {
           _id,
           name,
@@ -46,7 +47,7 @@ function SearchContent() {
           category,
           description
         }`;
-        
+
         const results = await client.fetch(searchQuery);
         
         if (results.length === 0) {
