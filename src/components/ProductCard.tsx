@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
 import { urlFor } from "@/sanity/lib/image";
+import React, { useState } from 'react';
 
 interface SanityImageObject {
   _type: string;
@@ -26,21 +27,21 @@ const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
   const router = useRouter();
   const { addToCart } = useCart();
 
-  // Convert Sanity image object to URL
-  const getImageUrl = (img: string | SanityImageObject) => {
-    if (typeof img === 'string') return img;
-    
-    // Handle Sanity image object
-    return urlFor({ 
-      asset: img.asset || { _ref: img._ref, _type: 'image' } 
-    }).width(300).height(300).url();
+  const [imageSrc, setImageSrc] = useState(
+    image 
+      ? urlFor(image).width(400).height(300).url() 
+      : '/placeholder-image.png'
+  );
+
+  const handleImageError = () => {
+    setImageSrc('/placeholder-image.png');
   };
 
   const handleAddToCart = () => {
     try {
       const cartItem = {
         id,
-        image: getImageUrl(image),
+        image: imageSrc,
         title,
         description: '',
         price,
@@ -48,7 +49,7 @@ const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
       };
       addToCart(cartItem);
       toast.success(`${title} added to cart`);
-    } catch (error) {
+    } catch {
       toast.error('Failed to add item to cart');
     }
   };
@@ -60,12 +61,14 @@ const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
   return (
     <div onClick={handleProductClick} className="cursor-pointer block">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-        <div className="relative w-full pt-[100%]">
+        <div className="relative w-full h-48">
           <Image 
-            src={getImageUrl(image)} 
+            src={imageSrc} 
             alt={title} 
             fill 
-            className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300" 
+            onError={handleImageError}
           />
         </div>
         <div className="p-4">

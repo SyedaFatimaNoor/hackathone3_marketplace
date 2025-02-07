@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { Suspense, useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,7 +10,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { Search, Filter, ShoppingBag, X } from 'lucide-react';
 import { debounce } from 'lodash';
 
-export default function SearchResults() {
+function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
@@ -20,13 +20,6 @@ export default function SearchResults() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Initialize query from URL on component mount
-  useEffect(() => {
-    const searchQuery = searchParams.get('q')?.trim().toLowerCase() || '';
-    setQuery(searchQuery);
-  }, [searchParams]);
-
-  // Debounced search function to prevent excessive API calls
   const debouncedSearch = useCallback(
     debounce(async (searchTerm: string) => {
       if (!searchTerm) {
@@ -109,6 +102,12 @@ export default function SearchResults() {
     );
     return [...new Set(categories)];
   }, [products]);
+
+  useEffect(() => {
+    const searchQuery = searchParams.get('q')?.trim().toLowerCase() || '';
+    setQuery(searchQuery);
+    debouncedSearch(searchQuery);
+  }, [searchParams, debouncedSearch]);
 
   if (isLoading) {
     return (
@@ -219,5 +218,13 @@ export default function SearchResults() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }
