@@ -205,13 +205,15 @@ export default function SearchResults() {
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product._id}
-              id={product._id}
-              image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
-              title={product.name}
-              price={product.price}
-            />
+            product && typeof product === 'object' && product._id ? (
+              <ProductCard 
+                key={product._id} 
+                id={product._id}
+                title={product.name || ''} 
+                price={product.price || 0} 
+                image={product.image?.asset?._ref || ''} 
+              />
+            ) : null
           ))}
         </div>
       </div>
