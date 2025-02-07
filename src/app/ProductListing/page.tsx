@@ -7,7 +7,6 @@ import Footer from "@/components/Footer";
 import { client } from "@/sanity/lib/client";
 import { allProducts } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
-import { projectId, dataset, apiVersion } from "@/sanity/env";
 
 interface Product {
   id: string;
@@ -28,18 +27,33 @@ export default function ProductsPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        console.log('Sanity Config:', { projectId, dataset, apiVersion });
+        console.log('Sanity Client Config:', {
+          projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+          dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+          apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION
+        });
+        
         const fetchedProducts: Product[] = await client.fetch(allProducts);
-        console.log('Fetched Products:', fetchedProducts);
-        setProducts(fetchedProducts);
-        setFilteredProducts(fetchedProducts);
+        
+        console.log('Raw Fetched Products:', fetchedProducts);
+        
+        if (!fetchedProducts || fetchedProducts.length === 0) {
+          console.warn('No products found in Sanity');
+        }
+        
+        setProducts(fetchedProducts || []);
+        setFilteredProducts(fetchedProducts || []);
       } catch (error) {
         console.error("Detailed Error fetching products:", {
-          error,
-          projectId,
-          dataset,
-          apiVersion
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : 'No stack trace',
+          projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+          dataset: process.env.NEXT_PUBLIC_SANITY_DATASET
         });
+        
+        // Set empty array to prevent undefined state
+        setProducts([]);
+        setFilteredProducts([]);
       } finally {
         setIsLoading(false);
       }

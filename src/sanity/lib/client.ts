@@ -7,7 +7,8 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,  
+  useCdn: false,  // Explicitly disable CDN
+  perspective: 'published'
 })
 
 const builder = imageUrlBuilder(client)
