@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
 import { urlFor } from "@/sanity/lib/image";
-import React, { useState } from 'react';
 
 interface SanityImageObject {
   _type: string;
@@ -27,21 +26,21 @@ const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
   const router = useRouter();
   const { addToCart } = useCart();
 
-  const [imageSrc, setImageSrc] = useState(
-    image 
-      ? urlFor(image).width(400).height(300).url() 
-      : '/placeholder-image.png'
-  );
-
-  const handleImageError = () => {
-    setImageSrc('/placeholder-image.png');
+  // Convert Sanity image object to URL
+  const getImageUrl = (img: string | SanityImageObject) => {
+    if (typeof img === 'string') return img;
+    
+    // Handle Sanity image object
+    return urlFor({ 
+      asset: img.asset || { _ref: img._ref, _type: 'image' } 
+    }).width(300).height(300).url();
   };
 
   const handleAddToCart = () => {
     try {
       const cartItem = {
         id,
-        image: imageSrc,
+        image: getImageUrl(image),
         title,
         description: '',
         price,
@@ -55,20 +54,35 @@ const ProductCard = ({ id, image, title, price }: ProductCardProps) => {
   };
 
   const handleProductClick = () => {
-    router.push(`/products/${id}`);
+    try {
+      // Ensure the ID is valid before navigation
+      if (!id) {
+        toast.error('Invalid product ID');
+        return;
+      }
+
+      // Log navigation attempt for debugging
+      console.log(`Navigating to product: /products/${id}`);
+
+      // Navigate to product page
+      router.push(`/products/${id}`, { 
+        scroll: true 
+      });
+    } catch (error) {
+      console.error('Product navigation error:', error);
+      toast.error('Unable to view product details');
+    }
   };
 
   return (
     <div onClick={handleProductClick} className="cursor-pointer block">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-        <div className="relative w-full h-48">
+        <div className="relative w-full pt-[100%]">
           <Image 
-            src={imageSrc} 
+            src={getImageUrl(image)} 
             alt={title} 
             fill 
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-300" 
-            onError={handleImageError}
+            className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
           />
         </div>
         <div className="p-4">

@@ -5,11 +5,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { client } from "@/sanity/lib/client";
-import { Product } from "types/products";
-import { urlFor } from "@/sanity/lib/image";
+import { Product, isValidImage } from "types/products";
 import { Search, Filter, ShoppingBag, X } from 'lucide-react';
 import { debounce } from 'lodash';
-import { groq } from 'next-sanity';
 
 function SearchContent() {
   const router = useRouter();
@@ -63,7 +61,7 @@ function SearchContent() {
         setIsLoading(false);
       }
     }, 300),
-    [client, setProducts, setFilteredProducts, setError, setIsLoading]
+    [client, setProducts, setFilteredProducts, setError, setIsLoading, query]
   );
 
   const handleCategoryFilter = (_category: string) => {
@@ -211,7 +209,13 @@ function SearchContent() {
                 id={product._id}
                 title={product.name || ''} 
                 price={product.price || 0} 
-                image={product.image?.asset?._ref || ''} 
+                image={
+                  isValidImage(product.image) 
+                    ? (typeof product.image === 'string' 
+                        ? product.image 
+                        : product.image.url || '') 
+                    : ''
+                } 
               />
             ) : null
           ))}

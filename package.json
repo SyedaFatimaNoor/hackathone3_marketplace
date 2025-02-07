@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "import-data": "node importDataScript.js",
     "clean": "rm -rf .next",
     "rebuild": "npm run clean && npm run build",
