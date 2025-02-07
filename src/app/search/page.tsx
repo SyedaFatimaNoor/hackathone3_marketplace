@@ -79,12 +79,12 @@ export default function SearchResults() {
     }
   }, [query, debouncedSearch]);
 
-  const handleCategoryFilter = (category: string) => {
-    setSelectedCategory(category);
+  const handleCategoryFilter = (_category: string) => {
+    setSelectedCategory(_category);
     const filtered = products.filter(product => 
       product.category && 
       typeof product.category === 'string' && 
-      product.category.toLowerCase() === category.toLowerCase()
+      product.category.toLowerCase() === _category.toLowerCase()
     );
     setFilteredProducts(filtered);
   };
@@ -94,8 +94,8 @@ export default function SearchResults() {
     setFilteredProducts(products);
   };
 
-  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuery = e.target.value;
+  const handleQueryChange = (_e: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuery = _e.target.value;
     setQuery(newQuery);
     router.replace(`/search?q=${encodeURIComponent(newQuery)}`);
   };
