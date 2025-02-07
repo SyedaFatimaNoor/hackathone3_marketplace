@@ -69,15 +69,8 @@ export default function SearchResults() {
         setIsLoading(false);
       }
     }, 300),
-    [client]
+    [client, setProducts, setFilteredProducts, setError, setIsLoading]
   );
-
-  // Trigger search when query changes
-  useEffect(() => {
-    if (query) {
-      debouncedSearch(query);
-    }
-  }, [query, debouncedSearch]);
 
   const handleCategoryFilter = (_category: string) => {
     setSelectedCategory(_category);
