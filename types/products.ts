@@ -1,29 +1,34 @@
-// types/products.ts
-
-export interface SanityImage {
-    url?: string;
+export interface SanityImageObject {
+  _type: string;
+  _ref?: string;
+  asset?: {
     _ref?: string;
-    _type: "image";
-}
-
-export function isValidImage(image: any): image is SanityImage {
-    return image && (typeof image === 'string' || 
-        (typeof image === 'object' && 
-         (image.url || image._ref) && 
-         image._type === 'image'));
+    _type: string;
+  };
 }
 
 export interface Product {
-    dimensions: {
-        width: number;
-        height: number;
-        depth: number;
-    };
-    _id: string;
-    name: string;
-    _type: "product";
-    image?: SanityImage | string;
-    price: number;
-    description?: string;
-    category?: string | null;
+  _id: string;
+  name: string;
+  price: number;
+  image: string | SanityImageObject | null;
+  category: string;
+  description: string;
+}
+
+export function isValidImage(image: any): boolean {
+  // Check if it's a non-empty string
+  if (typeof image === 'string') {
+    return image.trim() !== '';
+  }
+
+  // Check if it's a Sanity image object
+  if (typeof image === 'object' && image !== null) {
+    return !!(
+      image._ref || 
+      (image.asset && image.asset._ref)
+    );
+  }
+
+  return false;
 }

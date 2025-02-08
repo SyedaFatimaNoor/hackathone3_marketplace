@@ -14,6 +14,7 @@ interface Product {
   title: string;
   price: number;
   category: string;
+  description: string;
 }
 
 export default function ProductsPage() {
@@ -138,8 +139,9 @@ export default function ProductsPage() {
                     key={product.id}
                     id={product.id} 
                     image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
-                    title={product.title}
+                    name={product.title}
                     price={product.price}
+                    description={product.description || 'No description available'}
                   />
                 ))}
               </div>

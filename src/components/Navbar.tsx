@@ -1,14 +1,15 @@
 "use client";
 import Link from 'next/link';
-import { Search, ShoppingCart, CircleUserRound, Menu, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
+import { Search, ShoppingCart, CircleUserRound, Menu, ChevronDown, Heart } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { client } from "@/sanity/lib/client";
 import { useRouter } from "next/navigation";
 import { useCart } from '@/context/CartContext';
-import { client } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
-import Image from 'next/image';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useWishlist } from '@/context/WishlistContext';
 import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import LanguageSwitcher from './LanguageSwitcher';
+import { urlFor } from "@/sanity/lib/image";
 
 type SearchSuggestion = {
   _id: string;
@@ -21,6 +22,7 @@ type SearchSuggestion = {
 };
 
 const Navbar = () => {
+  const [isClient, setIsClient] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);   
@@ -31,8 +33,11 @@ const Navbar = () => {
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { getTotalItems } = useCart();
+  const { getWishlistCount } = useWishlist();
+  const wishlistCount = getWishlistCount();
 
   useEffect(() => {
+    setIsClient(true);
     // Client-side only calculation
     setCartCount(getTotalItems());
   }, [getTotalItems]);
@@ -150,11 +155,19 @@ const Navbar = () => {
         {/* Right Icons */}
         <div className="hidden md:flex items-center space-x-4">
           <LanguageSwitcher /> {/* Language Switcher */}
-          <Link href="/Shopping" className="relative">
-            <ShoppingCart className="w-5 h-5 text-[#2A254B] cursor-pointer" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1">
-                {cartCount} {/* Display total items */}
+          <Link href="/Shopping" className="relative group">
+            <ShoppingCart className="w-5 h-5 text-[#2A254B] cursor-pointer group-hover:text-[#4A4262] transition-colors" />
+            {isClient && (
+              <span className={`absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1 group-hover:bg-[#4A4262] ${(cartCount > 0) ? 'visible' : 'invisible'}`}>
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          <Link href="/wishlist" className="group relative">
+            <Heart className="w-5 h-5 text-[#2A254B] cursor-pointer group-hover:text-[#4A4262] transition-colors" />
+            {isClient && (
+              <span className={`absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1 group-hover:bg-[#4A4262] ${(wishlistCount > 0) ? 'visible' : 'invisible'}`}>
+                {wishlistCount}
               </span>
             )}
           </Link>
@@ -237,6 +250,41 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
+          </div>
+          {/* Mobile Cart, Wishlist, Profile */}
+          <div className="flex justify-around items-center border-t pt-4">
+            <Link href="/cart" className="relative flex flex-col items-center">
+              <ShoppingCart size={24} />
+              <span className="text-xs mt-1">Cart</span>
+              {isClient && cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            <Link href="/wishlist" className="relative flex flex-col items-center">
+              <Heart size={24} />
+              <span className="text-xs mt-1">Wishlist</span>
+              {isClient && wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+            <div className="flex flex-col items-center">
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+                <span className="text-xs mt-1">Profile</span>
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <div className="flex flex-col items-center">
+                    <CircleUserRound size={24} />
+                    <span className="text-xs mt-1">Login</span>
+                  </div>
+                </SignInButton>
+              </SignedOut>
+            </div>
           </div>
           {/* Mobile Authentication */}
           <SignedIn>

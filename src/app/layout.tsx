@@ -3,6 +3,7 @@ import "./globals.css";
 import BackToTop from "@/components/BackToTop";
 import { CartProvider } from "@/context/CartContext";  
 import { LanguageProvider } from "@/context/LanguageContext";  
+import { WishlistProvider } from '@/context/WishlistContext';
 import { Toaster } from 'sonner';  
 import { ClerkProvider } from '@clerk/nextjs'
 import { dark } from "@clerk/themes";
@@ -28,19 +29,18 @@ export default function RootLayout({
               colorPrimary: '#2A254B',
             },
             elements: {
-              formButtonPrimary: 'bg-[#2A254B] hover:bg-[#3A355B] text-white',
-              card: 'shadow-2xl'
-            }
+              // Clerk styling
+            },
           }}
-          afterSignInUrl="/"
-          afterSignUpUrl="/"
         >
-          <ClerkAuthHandler />
           <LanguageProvider>
             <CartProvider>
+              <WishlistProvider>
                 {children}
-              <BackToTop />
-              <Toaster richColors />
+                <Toaster richColors />
+                <BackToTop />
+                <ClerkAuthHandler />
+              </WishlistProvider>
             </CartProvider>
           </LanguageProvider>
         </ClerkProvider>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 type CartItem = {
   id: string;
@@ -25,22 +25,42 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // Initialize cart items from localStorage on first render
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cartItems');
+      return savedCart ? JSON.parse(savedCart) : [];
+    }
+    return [];
+  });
+
+  // Update localStorage whenever cartItems change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((i) => i.id === item.id);
+      let newItems;
       if (existingItem) {
-        return prevItems.map((i) =>
+        newItems = prevItems.map((i) =>
           i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
         );
+      } else {
+        newItems = [...prevItems, item];
       }
-      return [...prevItems, item];
+      return newItems;
     });
   };
 
   const removeProductFromCart = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    setCartItems((prevItems) => {
+      const newItems = prevItems.filter((item) => item.id !== id);
+      return newItems;
+    });
   };
 
   const increaseQuantity = (id: string) => {
@@ -54,8 +74,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const decreaseQuantity = (id: string) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity - 1) } : item
-      )
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      ).filter((item) => item.quantity > 0)
     );
   };
 
@@ -68,20 +90,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      addToCart,
-      clearCart,
-      getTotalItems,
-      removeProductFromCart,
-      increaseQuantity,
-      decreaseQuantity,
-      calculateTotal
-    }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        clearCart,
+        getTotalItems,
+        removeProductFromCart,
+        increaseQuantity,
+        decreaseQuantity,
+        calculateTotal,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

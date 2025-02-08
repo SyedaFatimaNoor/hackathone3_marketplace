@@ -20,12 +20,7 @@
     "target": "ESNext", // Use ESNext for modern features
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/types/*": [
-        "./types/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "plugins": [
       {

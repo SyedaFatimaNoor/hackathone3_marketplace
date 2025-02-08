@@ -1,31 +1,40 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { client } from "@/sanity/lib/client";
-import { Product } from "types/products";
+import { Product } from "@/types/products";
 import { urlFor } from "@/sanity/lib/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { useCart } from '@/context/CartContext'; // Import the useCart hook
-import Notification from '@/components/Notification'; // Import the Notification component
+import { useCart } from '@/context/CartContext';
+import Notification from '@/components/Notification';
 
-export default function SingleProductPage() {
-  const { id } = useParams();
+export default function SingleProductPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1); // State for quantity
-  const { addToCart } = useCart(); // Get the addToCart function from context
-  const [notification, setNotification] = useState<string | null>(null); // State for notification
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const [notification, setNotification] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("Current Product ID:", id);
     async function fetchProduct() {
       try {
+        console.log("Fetching product with ID:", id);
         const fetchedProduct: Product = await client.fetch(
-          `*[_type == "product" && _id == $id][0]`,
+          `*[_type == "product" && _id == $id][0]{
+            ...,
+            "image": image.asset->{
+              url,
+              _ref,
+              _type
+            }
+          }`,
           { id }
         );
+        console.log("Fetched Product:", fetchedProduct);
         setProduct(fetchedProduct);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -34,7 +43,9 @@ export default function SingleProductPage() {
       }
     }
 
-    fetchProduct();
+    if (id) {
+      fetchProduct();
+    }
   }, [id]);
 
   const increaseQuantity = () => {
@@ -42,14 +53,16 @@ export default function SingleProductPage() {
   };
 
   const decreaseQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent quantity from going below 1
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
   const handleAddToCart = () => {
     if (product) {
       addToCart({
-        id: product._id || "0", // Keep as string
-        image: product.image ? urlFor(product.image).url() : "",
+        id: product._id || "0",
+        image: 
+          product.image?.url || 
+          (typeof product.image === 'string' ? product.image : "/placeholder.svg"),
         title: product.name,
         description: product.description || "",
         price: product.price,
@@ -79,7 +92,10 @@ export default function SingleProductPage() {
           {/* Product Image */}
           <div className="flex-1">
             <Image
-              src={product.image ? urlFor(product.image).url() : "/placeholder.svg"}
+              src={
+                product.image?.url || 
+                (typeof product.image === 'string' ? product.image : "/placeholder.svg")
+              }
               alt={product.name}
               width={500}
               height={500}
@@ -96,15 +112,21 @@ export default function SingleProductPage() {
               <div className="grid grid-cols-3 gap-4 mt-2 text-gray-700">
                 <div>
                   <span className="block font-medium">Height</span>
-                  {product.dimensions?.height || "N/A"}
+                  {product.dimensions?.height !== undefined 
+                    ? `${product.dimensions.height} cm` 
+                    : "N/A"}
                 </div>
                 <div>
                   <span className="block font-medium">Width</span>
-                  {product.dimensions?.width || "N/A"}
+                  {product.dimensions?.width !== undefined 
+                    ? `${product.dimensions.width} cm` 
+                    : "N/A"}
                 </div>
                 <div>
                   <span className="block font-medium">Depth</span>
-                  {product.dimensions?.depth || "N/A"}
+                  {product.dimensions?.depth !== undefined 
+                    ? `${product.dimensions.depth} cm` 
+                    : "N/A"}
                 </div>
               </div>
             </div>
@@ -147,6 +169,5 @@ export default function SingleProductPage() {
       <Footer />
       {notification && <Notification message={notification} onClose={closeNotification} />}
     </div>
-
   );
 }
