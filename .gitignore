@@ -32,15 +32,16 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.vercel
 
 # Local Netlify folder
 .netlify
 
+# Redundant entries
 .vercel
