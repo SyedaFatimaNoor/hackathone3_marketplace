@@ -1,19 +1,20 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/next"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/"
+      }
+    ],
+    "env": {
+      "NEXT_PUBLIC_SANITY_PROJECT_ID": "@sanity_project_id",
+      "NEXT_PUBLIC_SANITY_DATASET": "@sanity_dataset",
+      "NEXT_PUBLIC_SANITY_API_VERSION": "2025-01-18"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ],
-  "env": {
-    "NEXT_PUBLIC_SANITY_PROJECT_ID": "${NEXT_PUBLIC_SANITY_PROJECT_ID}",
-    "NEXT_PUBLIC_SANITY_DATASET": "${NEXT_PUBLIC_SANITY_DATASET}"
   }
-}

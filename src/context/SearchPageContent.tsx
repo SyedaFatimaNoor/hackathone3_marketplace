@@ -40,16 +40,16 @@ export default function SearchPageContent() {
         console.log('Fetching products with query:', searchQuery);
         
         const query = `*[_type == "product" && (
-          lower(name) match lower("${searchQuery}*") ||
-          lower(category) match lower("${searchQuery}*") ||
-          lower(description) match lower("${searchQuery}*")
-        )] {
+          name match "${searchQuery}*" || 
+          category match "${searchQuery}*" || 
+          description match "${searchQuery}*"
+        )]{
           _id,
-          name,
-          price,
+          name, 
+          price, 
+          description,
           "imageUrl": image.asset->url,
-          category,
-          description
+          category
         }`;
 
         console.log('Sanity Query:', query);
