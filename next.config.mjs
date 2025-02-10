@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      domains: ['cdn.sanity.io'], // Add your Sanity project's image domain
-    },
-  };
+  output: 'standalone', // Important for Netlify deployment
+  images: {
+    domains: ['cdn.sanity.io']
+  }
+}
   
 export default nextConfig;
