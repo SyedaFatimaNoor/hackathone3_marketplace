@@ -158,7 +158,7 @@ const Navbar = () => {
           <Link href="/Shopping" className="relative group">
             <ShoppingCart className="w-5 h-5 text-[#2A254B] cursor-pointer group-hover:text-[#4A4262] transition-colors" />
             {isClient && (
-              <span className={`absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1 group-hover:bg-[#4A4262] ${(cartCount > 0) ? 'visible' : 'invisible'}`}>
+              <span className={`absolute -top-1 -right-1 bg-[#ff0033] text-white rounded-full text-xs px-1 group-hover:bg-[#ff0033aa] ${(cartCount > 0) ? 'visible' : 'invisible'}`}>
                 {cartCount}
               </span>
             )}
@@ -166,7 +166,7 @@ const Navbar = () => {
           <Link href="/wishlist" className="group relative">
             <Heart className="w-5 h-5 text-[#2A254B] cursor-pointer group-hover:text-[#4A4262] transition-colors" />
             {isClient && (
-              <span className={`absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1 group-hover:bg-[#4A4262] ${(wishlistCount > 0) ? 'visible' : 'invisible'}`}>
+              <span className={`absolute -top-1 -right-1 bg-[#ff0033] text-white rounded-full text-xs px-1 group-hover:bg-[#ff0033aa] ${(wishlistCount > 0) ? 'visible' : 'invisible'}`}>
                 {wishlistCount}
               </span>
             )}

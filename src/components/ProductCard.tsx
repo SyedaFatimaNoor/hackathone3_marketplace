@@ -50,24 +50,18 @@ const ProductCard = ({
   // Convert Sanity image object to URL
   const getImageUrl = (img: string | SanityImageObject) => {
     if (typeof img === 'string') {
-      return img.startsWith('http') || img.startsWith('/') 
-        ? img 
-        : '/placeholder-image.png';
+      return img;
     }
-
-    try {
-      if (img.asset && img.asset._ref) {
-        return urlFor({ asset: img.asset }).width(400).height(400).url() || '/placeholder-image.png';
-      }
-
-      if (img._ref) {
-        return urlFor({ asset: { _ref: img._ref, _type: 'image' } }).width(400).height(400).url() || '/placeholder-image.png';
-      }
-    } catch (error) {
-      console.error('Image URL generation error:', error);
+    
+    if (img._type === 'image' && img._ref) {
+      return urlFor(img).url() || '/placeholder.png';
     }
-
-    return '/placeholder-image.png';
+    
+    if (img.asset && img.asset._ref) {
+      return urlFor(img.asset).url() || '/placeholder.png';
+    }
+    
+    return '/placeholder.png';
   };
 
   const handleAddToCart = () => {
@@ -104,8 +98,8 @@ const ProductCard = ({
         imageUrl: typeof image === 'string' 
           ? image 
           : image?.asset?._ref 
-            ? urlFor({ asset: image.asset }).width(400).height(400).url() ?? '/placeholder-image.png'
-            : '/placeholder-image.png'
+            ? urlFor({ asset: image.asset }).width(400).height(400).url() ?? '/placeholder.png'
+            : '/placeholder.png'
       });
     }
   };
