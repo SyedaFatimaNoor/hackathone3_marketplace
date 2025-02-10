@@ -37,26 +37,40 @@ export default function SearchPageContent() {
 
     async function fetchProducts() {
       try {
+        console.log('Fetching products with query:', searchQuery);
+        
         const query = `*[_type == "product" && (
-          lower(name) match lower("${searchQuery}") ||
-          lower(category) match lower("${searchQuery}") ||
-          lower(description) match lower("${searchQuery}")
+          lower(name) match lower("${searchQuery}*") ||
+          lower(category) match lower("${searchQuery}*") ||
+          lower(description) match lower("${searchQuery}*")
         )] {
           _id,
           name,
           price,
-          image,
+          "imageUrl": image.asset->url,
           category,
           description
         }`;
 
+        console.log('Sanity Query:', query);
+
         const results = await client.fetch<Product[]>(query);
         
+        console.log('Fetched Products:', results);
+        
+        if (results.length === 0) {
+          console.warn('No products found for query:', searchQuery);
+        }
+
         setProducts(results);
         setLoading(false);
       } catch (err) {
-        console.error('Search error:', err);
-        setError('Failed to fetch products');
+        console.error('Detailed Search Error:', {
+          message: err instanceof Error ? err.message : String(err),
+          query: searchQuery,
+          stack: err instanceof Error ? err.stack : undefined
+        });
+        setError(`Failed to fetch products: ${err instanceof Error ? err.message : String(err)}`);
         setLoading(false);
       }
     }
@@ -139,7 +153,7 @@ export default function SearchPageContent() {
                   id={product._id}
                   name={product.name}
                   price={product.price}
-                  image={product.image ? urlFor(product.image).url() : ''}
+                  image={product.imageUrl || '/default-product-image.png'}
                   description={product.description}
                 />
               ))}
