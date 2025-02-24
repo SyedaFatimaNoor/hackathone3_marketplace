@@ -1,42 +1,75 @@
 import { createClient } from 'next-sanity'
 import imageUrlBuilder from '@sanity/image-url'
-
 import { apiVersion, dataset, projectId } from '../env'
 
-// Add more detailed logging
+// Enhanced error handling for configuration
+if (!projectId || !dataset || !apiVersion) {
+  throw new Error('Sanity configuration is missing required values. Check your environment variables.');
+}
+
+// Improved logging with more details
 console.log('Sanity Configuration:', {
   projectId,
   dataset,
   apiVersion,
-  useCdn: process.env.NODE_ENV === 'production'
+  useCdn: process.env.NODE_ENV === 'production',
+  tokenPresent: !!process.env.SANITY_ACCESS_TOKEN
 });
 
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: process.env.NODE_ENV === 'production', // Use CDN in production
+  useCdn: process.env.NODE_ENV === 'production',
   perspective: 'published',
-  // Add token for more reliable fetching
-  token: process.env.SANITY_ACCESS_TOKEN
+  token: process.env.SANITY_ACCESS_TOKEN,
+  // Add stega content for better debugging
+  stega: {
+    enabled: process.env.NODE_ENV === 'development',
+    studioUrl: '/studio',
+  },
 });
 
+// Enhanced image builder with better typing
 const builder = imageUrlBuilder(client)
 
+// Improved urlFor function with better error handling and types
 export function urlFor(source: { asset?: { _ref: string; _type: string } } | string) {
   try {
+    // Handle string sources
     if (typeof source === 'string') {
-      return builder.image(source);
+      return builder.image(source).url();
     }
     
-    if (source.asset && source.asset._ref) {
-      return builder.image(source.asset);
+    // Handle object sources with asset
+    if (source?.asset?._ref) {
+      return builder.image(source.asset).url();
     }
     
-    console.warn('Invalid image source:', source);
-    return builder.image('/placeholder.png');
+    // Enhanced logging for invalid sources
+    console.warn('Invalid image source provided:', {
+      sourceType: typeof source,
+      source: JSON.stringify(source)
+    });
+    
+    // Return a default placeholder URL
+    return '/placeholder.png';
   } catch (error) {
-    console.error('Error in urlFor:', error);
-    return builder.image('/placeholder.png');
+    console.error('Error processing image URL:', {
+      error,
+      source: typeof source === 'string' ? source : JSON.stringify(source)
+    });
+    return '/placeholder.png';
+  }
+}
+
+// Add a health check function
+export async function validateSanityConnection() {
+  try {
+    await client.fetch('*[_type == "sanity.imageAsset"][0]');
+    return true;
+  } catch (error) {
+    console.error('Sanity connection validation failed:', error);
+    return false;
   }
 }
