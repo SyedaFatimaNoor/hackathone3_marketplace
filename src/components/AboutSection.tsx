@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 const AboutSection = () => {
     return (
       <section className="grid grid-cols-1 lg:grid-cols-2">
@@ -15,9 +16,11 @@ const AboutSection = () => {
               Handmade, and lovingly crafted furniture and homeware is what we live, breathe and design so our Chelsea boutique become 
               the hotbed for the London interior design community.
             </p>
+            <Link href="/ContactUs">
             <button className="mt-[125px] px-8 py-4 border border-[#2A254B] text-[#2A254B] hover:bg-gray-100">
               Get in touch
             </button>
+          </Link>
           </div>
         </div>
         <div className="h-[600px] bg-[#F5F5F5]">

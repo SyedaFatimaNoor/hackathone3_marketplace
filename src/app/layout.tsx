@@ -11,7 +11,13 @@ import ClerkAuthHandler from '@/components/ClerkAuthHandler';
 
 export const metadata: Metadata = {  
   title: "Avion - Your One-Stop E-Commerce Shop",  
-  description: "Discover a wide range of premium products at Avion. Enjoy seamless shopping, competitive prices, and exceptional customer service.",  
+  description: "Discover a wide range of premium products at Avion. Enjoy seamless shopping, competitive prices, and exceptional customer service.",
+  icons: {
+    icon: [
+      { url: '/images/favicon.ico', sizes: 'any' },
+      { url: '/images/favicon.svg', type: 'image/svg+xml' }
+    ]
+  }
 };
 
 export default function RootLayout({

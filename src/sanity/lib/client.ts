@@ -17,12 +17,12 @@ console.log('Sanity Configuration:', {
 });
 
 export const client = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  useCdn: process.env.NODE_ENV === 'production',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2025-01-18',
+  useCdn: true, // set to false if you want to ensure fresh data
   perspective: 'published',
-  token: process.env.SANITY_ACCESS_TOKEN,
+  token: process.env.SANITY_API_TOKEN,
   // Add stega content for better debugging
   stega: {
     enabled: process.env.NODE_ENV === 'development',
