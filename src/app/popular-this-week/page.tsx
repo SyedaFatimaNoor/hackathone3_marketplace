@@ -64,7 +64,7 @@ export default function PopularThisWeekPage() {
           {isFilterOpen && (
             <div className="bg-[#F9F9F9] p-4 rounded-lg mb-4">
               <p className="text-sm text-gray-600">
-                Filter options coming soon! We're working on enhancing your shopping experience.
+                Filter options coming soon! We&apos;re working on enhancing your shopping experience.
               </p>
             </div>
           )}

@@ -54,7 +54,7 @@ export default function VacanciesPage() {
 
           <div className="mt-8 text-center">
             <p style={{ fontFamily: "ClashDisplay" }} className="text-lg text-[#2A254B] mb-4">
-              Don't see a role that fits? Send us your resume!
+              Don&apos;t see a role that fits? Send us your resume!
             </p>
             <button className="bg-[#2A254B] text-white px-6 py-3 rounded-lg hover:bg-opacity-90 transition-colors">
               Send Resume

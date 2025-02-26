@@ -16,7 +16,7 @@ export default function ReturnsPolicy() {
               <h2 style={{ fontFamily: "ClashDisplay" }} className="text-xl font-semibold mb-4">
                 30-Day Hassle-Free Returns
               </h2>
-              <p>At Artisan Haven, we want you to be completely satisfied with your purchase. If you're not happy with your item, we offer a straightforward return process.</p>
+              <p>At Artisan Haven, we want you to be completely satisfied with your purchase. If you&apos;re not happy with your item, we offer a straightforward return process.</p>
             </section>
 
             <section>
@@ -50,7 +50,7 @@ export default function ReturnsPolicy() {
               </h2>
               <ol className="list-decimal pl-6">
                 <li>Log into your Artisan Haven account</li>
-                <li>Go to 'Order History' and select the item to return</li>
+                <li>Go to &apos;Order History&apos; and select the item to return</li>
                 <li>Choose reason for return and print return label</li>
                 <li>Pack item securely in original packaging</li>
                 <li>Drop off at nearest shipping location</li>
