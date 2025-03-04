@@ -7,7 +7,6 @@ import JoinClubSection from "@/components/JoinClubSection";
 import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
 import ImageSlider, { SliderImage } from '@/components/ImageSlider';
-import PopularProducts from '@/components/PopularProducts';
 
 // Define slider images with responsive properties
 const sliderImages: SliderImage[] = [

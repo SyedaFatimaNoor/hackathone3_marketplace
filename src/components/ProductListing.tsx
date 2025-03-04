@@ -4,8 +4,7 @@ import ProductCard from "@/components/ProductCard";
 import FilterSection from "@/components/FilterSection";
 import { client } from "@/sanity/lib/client";
 import { allProducts } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
-import { Filter, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Filter, X, ChevronDown } from "lucide-react";
 
 interface Product {
   id: string;

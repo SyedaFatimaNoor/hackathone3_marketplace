@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, ReactElement } from "react";
+import React, { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import { Product } from '@/types/products';
 import { urlFor } from "@/sanity/lib/image";
@@ -32,6 +32,28 @@ export default function SingleProductPage({ params }: { params: { id: string } }
   const [isInFavorites, setIsInFavorites] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+  const fetchRelatedProducts = async (category: string, currentProductId?: string) => {
+    try {
+      const query = `*[_type == "product" && category == $category && _id != $currentProductId] | order(price asc) [0...4] {
+        _id,
+        name,
+        price,
+        "slug": slug.current,
+        "imageUrl": image.asset->url
+      }`;
+
+      const related = await client.fetch(query, { 
+        category, 
+        currentProductId: currentProductId || product?._id 
+      });
+
+      return related;
+    } catch (error) {
+      console.error('Error fetching related products:', error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -99,7 +121,7 @@ export default function SingleProductPage({ params }: { params: { id: string } }
     };
 
     loadRelatedProducts();
-  }, [product]);
+  }, [product, fetchRelatedProducts]);
 
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -183,63 +205,6 @@ export default function SingleProductPage({ params }: { params: { id: string } }
 
   const closeNotification = () => {
     setNotification(null);
-  };
-
-  const fetchRelatedProducts = async (category: string) => {
-    try {
-      const query = `*[_type == "product" && category == $category && _id != $currentProductId] | order(price asc) [0...4] {
-        _id,
-        name,
-        price,
-        "slug": slug.current,
-        "imageUrl": image.asset->url
-      }`;
-
-      const relatedProducts = await client.fetch(query, { 
-        category, 
-        currentProductId: product?._id 
-      });
-      return relatedProducts;
-    } catch (error) {
-      console.error('Error fetching related products:', error);
-      return [];
-    }
-  };
-
-  const fetchProductDetails = async () => {
-    try {
-      const query = `*[_type == "product" && _id == $id][0]{
-        _id,
-        name,
-        price,
-        description,
-        category,
-        "imageUrl": image.asset->url,
-        image {
-          asset->{
-            url,
-            _id
-          },
-          url,
-          _ref,
-          _type
-        },
-        dimensions {
-          width,
-          height,
-          depth
-        }
-      }`;
-
-      const fetchedProduct: Product | null = await client.fetch(query, { id: params.id });
-      
-      console.log("Fetched Product Details:", fetchedProduct);
-      
-      return fetchedProduct;
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      return null;
-    }
   };
 
   if (isLoading) {
@@ -444,6 +409,10 @@ export default function SingleProductPage({ params }: { params: { id: string } }
               </button>
             </div>
           </div>
+        </div>
+        <div className="product-details">
+          <h2>You&apos;ll Love These Products</h2>
+          <p>Discover items that complement your style and elevate your space.</p>
         </div>
       </div>
       <Footer />

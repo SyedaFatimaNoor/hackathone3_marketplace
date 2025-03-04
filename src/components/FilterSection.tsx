@@ -1,6 +1,6 @@
 'use client'
-import { useState } from "react";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import React, { useState } from "react";
+import { Check, ChevronRight } from "lucide-react";
 
 interface FilterOption {
   label: string;
