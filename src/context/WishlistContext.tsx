@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { ProductType } from '@/types/types';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 type WishlistContextType = {
   wishlistItems: ProductType[];
@@ -16,43 +16,71 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [wishlistItems, setWishlistItems] = useState<ProductType[]>(() => {
-    // Only run on client-side
+    // Ensure this runs only on client side
     if (typeof window !== 'undefined') {
-      const savedWishlist = localStorage.getItem('wishlistItems');
-      return savedWishlist ? JSON.parse(savedWishlist) : [];
+      try {
+        const savedWishlist = localStorage.getItem('wishlistItems');
+        return savedWishlist ? JSON.parse(savedWishlist) : [];
+      } catch (error) {
+        console.error('Error parsing wishlist from localStorage:', error);
+        return [];
+      }
     }
     return [];
   });
 
+  // Sync wishlist with localStorage
   useEffect(() => {
-    // Only update localStorage on client-side
     if (typeof window !== 'undefined') {
-      localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+      try {
+        localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+      } catch (error) {
+        console.error('Error saving wishlist to localStorage:', error);
+      }
     }
   }, [wishlistItems]);
 
   const addToWishlist = (item: ProductType) => {
     setWishlistItems((prevItems) => {
-      // Check if item already exists
-      const existingItemIndex = prevItems.findIndex((i) => i._id === item._id);
-      
-      if (existingItemIndex !== -1) {
-        // If item exists, do nothing
-        toast.info('Item already in wishlist');
+      // Detailed logging for debugging
+      console.log('Current Wishlist:', prevItems);
+      console.log('Attempting to add item:', item);
+
+      // More robust check for existing items
+      const isAlreadyInWishlist = prevItems.some(
+        (existingItem) => existingItem._id === item._id
+      );
+
+      if (isAlreadyInWishlist) {
+        toast.error('Item is already in your favorites', {
+          position: 'top-right',
+          duration: 2000
+        });
         return prevItems;
       }
+
+      // Add new item
+      const updatedWishlist = [...prevItems, item];
       
-      // If item doesn't exist, add it
-      toast.success('Added to wishlist');
-      return [...prevItems, item];
+      toast.success('Added to favorites!', {
+        position: 'top-right',
+        duration: 2000
+      });
+
+      return updatedWishlist;
     });
   };
 
   const removeFromWishlist = (id: string) => {
     setWishlistItems((prevItems) => {
-      const newItems = prevItems.filter((item) => item._id !== id);
-      toast.success('Removed from wishlist');
-      return newItems;
+      const updatedWishlist = prevItems.filter((item) => item._id !== id);
+      
+      toast.success('Removed from favorites', {
+        position: 'top-right',
+        duration: 2000
+      });
+
+      return updatedWishlist;
     });
   };
 

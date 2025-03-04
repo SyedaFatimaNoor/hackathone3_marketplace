@@ -12,7 +12,10 @@ export const product = defineType({
             options: {
                 list: [
                     "Furniture",
-                    "Home Decor",
+                    "Crockery", 
+                    "Plant Pots",
+                    "Homeware",
+                    "Chairs",
                     "Styles or Themes",
                     "Functionality",
                     "Material"
@@ -29,8 +32,12 @@ export const product = defineType({
         defineField({
             name: "slug",
             title: "Slug",
-            validation: (rule) => rule.required(),
-            type: "slug"
+            type: "slug",
+            options: {
+              source: "name",
+              maxLength: 96
+            },
+            validation: (rule) => rule.required()
         }),
         defineField({
             name: "image",

@@ -49,6 +49,7 @@ interface FilterSectionProps {
   selectedPriceRange: string;
   onCategoryChange: (category: string) => void;
   onPriceChange: (range: string) => void;
+  isMobile?: boolean;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
@@ -56,6 +57,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   selectedPriceRange,
   onCategoryChange,
   onPriceChange,
+  isMobile = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,34 +77,41 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   ];
 
   return (
-    <div className="p-6">
-      <div className="lg:hidden mb-4">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full py-2 text-[#2A254B]"
-        >
-          <span className="text-lg font-clash">Filters</span>
-          {isOpen ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </button>
-      </div>
+    <div className={`p-4 ${isMobile ? 'w-full' : 'w-full lg:w-[385px]'}`}>
+      {/* Mobile Filter Toggle */}
+      {isMobile && (
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-lg font-clash text-[#2A254B]">Filters</span>
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-[#2A254B]"
+          >
+            {isOpen ? 'Close' : 'Open'} Filters
+          </button>
+        </div>
+      )}
 
-      <div className={`space-y-8 ${isOpen ? "block" : "hidden lg:block"}`}>
-        <FilterGroup
-          title="Category"
-          options={categories}
-          onChange={onCategoryChange}
-          selectedValue={selectedCategory}
-        />
-        <FilterGroup
-          title="Price Range"
-          options={priceRanges}
-          onChange={onPriceChange}
-          selectedValue={selectedPriceRange}
-        />
+      {/* Filter Content - Responsive */}
+      <div className={`
+        ${isMobile 
+          ? `transition-all duration-300 ease-in-out 
+             ${isOpen ? 'block' : 'hidden'}` 
+          : 'block'}
+      `}>
+        <div className="space-y-6">
+          <FilterGroup
+            title="Category"
+            options={categories}
+            onChange={onCategoryChange}
+            selectedValue={selectedCategory}
+          />
+          <FilterGroup
+            title="Price Range"
+            options={priceRanges}
+            onChange={onPriceChange}
+            selectedValue={selectedPriceRange}
+          />
+        </div>
       </div>
     </div>
   );

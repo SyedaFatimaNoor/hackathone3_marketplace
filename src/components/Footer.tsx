@@ -64,23 +64,59 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-center md:text-left">Copyright 2025 Artisan Haven. All rights reserved.</p>
             <div className="flex gap-6 justify-center md:justify-end">
-              <Link href="#" className="hover:text-[#4E4D93] transition-colors duration-300">
-                <FaLinkedin className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+              <Link 
+                href="https://twitter.com" 
+                target="_blank" 
+                className="group"
+              >
+                <FaTwitter 
+                  className="text-white text-2xl group-hover:text-[#1DA1F2] transition-colors duration-300" 
+                />
               </Link>
-              <Link href="#" className="hover:text-[#4E4D93] transition-colors duration-300">
-                <AiFillFacebook className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+              <Link 
+                href="https://linkedin.com" 
+                target="_blank" 
+                className="group"
+              >
+                <FaLinkedin 
+                  className="text-white text-2xl group-hover:text-[#0A66C2] transition-colors duration-300" 
+                />
               </Link>
-              <Link href="#" className="hover:text-[#4E4D93] transition-colors duration-300">
-                <FaInstagram className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+              <Link 
+                href="https://instagram.com" 
+                target="_blank" 
+                className="group"
+              >
+                <FaInstagram 
+                  className="text-white text-2xl group-hover:text-[#E1306C] transition-colors duration-300" 
+                />
               </Link>
-              <Link href="#" className="hover:text-[#4E4D93] transition-colors duration-300">
-                <TiSocialSkype className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform"/>
+              <Link 
+                href="https://pinterest.com" 
+                target="_blank" 
+                className="group"
+              >
+                <FaPinterest 
+                  className="text-white text-2xl group-hover:text-[#E60023] transition-colors duration-300" 
+                />
               </Link>
-              <Link href="#" className="hover:text-[#4E4D93] transition-colors duration-300">
-                <FaTwitter className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+              <Link 
+                href="https://facebook.com" 
+                target="_blank" 
+                className="group"
+              >
+                <AiFillFacebook 
+                  className="text-white text-2xl group-hover:text-[#4267B2] transition-colors duration-300" 
+                />
               </Link>
-              <Link href="#" className="hover:text-[#4E4D93] transition-colors duration-300">
-                <FaPinterest className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform" />
+              <Link 
+                href="https://skype.com" 
+                target="_blank" 
+                className="group"
+              >
+                <TiSocialSkype 
+                  className="text-white text-2xl group-hover:text-[#00AFF0] transition-colors duration-300" 
+                />
               </Link>
             </div>
           </div>
@@ -91,3 +127,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

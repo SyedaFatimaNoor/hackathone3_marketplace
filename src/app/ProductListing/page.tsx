@@ -97,66 +97,96 @@ export default function ProductsPage() {
     setVisibleCount((prevCount) => prevCount + 6);
   };
 
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      {/* Hero Section */}
+      {/* Hero Section - Responsive */}
       <div
-        style={{
-          backgroundImage: `url('/images/header.jpeg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-        className="relative h-[209px] flex items-center px-8 md:px-16"
+       style={{
+        backgroundImage: `linear-gradient(rgba(42, 37, 75, 0.7), rgba(42, 37, 75, 0.7)), url('/images/header.jpeg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+      className="relative h-[300px] flex items-center justify-center px-8 md:px-16"
       >
-        <h1 className="text-white text-4xl font-normal font-clash">
+      <h1 style={{ fontFamily: 'ClashDisplay' }} className="text-white text-5xl font-normal mb-4">
           All products
         </h1>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-[1440px] mx-auto">
+      {/* Main Content - Responsive Grid */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row">
-          {/* Filters */}
-          <div className="lg:w-[385px] border-r border-[#DBDBDB]">
-            <FilterSection 
-              selectedCategory={selectedCategory}
-              selectedPriceRange={selectedPriceRange}
-              onCategoryChange={handleCategoryFilter}
-              onPriceChange={handlePriceFilter}
-            />
+          {/* Filters - Responsive Dropdown on Mobile */}
+          <div className="lg:w-[385px] lg:border-r lg:border-[#DBDBDB]">
+            <div className="block lg:hidden mb-4">
+              <FilterSection 
+                selectedCategory={selectedCategory}
+                selectedPriceRange={selectedPriceRange}
+                onCategoryChange={handleCategoryFilter}
+                onPriceChange={handlePriceFilter}
+                isMobile={true}
+              />
+            </div>
+            <div className="hidden lg:block">
+              <FilterSection 
+                selectedCategory={selectedCategory}
+                selectedPriceRange={selectedPriceRange}
+                onCategoryChange={handleCategoryFilter}
+                onPriceChange={handlePriceFilter}
+                isMobile={false}
+              />
+            </div>
           </div>
 
-          {/* Products Grid */}
-          <div className="flex-1 p-8">
+          {/* Products Grid - Responsive */}
+          <div className="flex-1 py-4 sm:py-8">
             {isLoading ? (
-              <div className="text-center">Loading...</div>
+              <div className="min-h-[50vh] flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#2A254B] mx-auto mb-4"></div>
+                  <p className="text-sm sm:text-base text-[#2A254B]">
+                    Loading Products...
+                  </p>
+                </div>
+              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProducts.slice(0, visibleCount).map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id} 
-                    image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
-                    name={product.title}
-                    price={product.price}
-                    description={product.description || 'No description available'}
-                  />
-                ))}
-              </div>
-            )}
+              <>
+                {filteredProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-xl text-gray-600">
+                      No products found in this category
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                    {filteredProducts.slice(0, visibleCount).map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        id={product.id} 
+                        image={product.image ? urlFor(product.image).url() : '/placeholder.svg'}
+                        name={product.title}
+                        price={product.price}
+                        description={product.description || 'No description available'}
+                      />
+                    ))}
+                  </div>
+                )}
 
-            {/* Load More Button */}
-            {visibleCount < filteredProducts.length && (
-              <div className="flex justify-center mt-12">
-                <button
-                  className="px-8 py-4 border border-[#2A254B] text-[#2A254B] hover:bg-[#2A254B] hover:text-white transition duration-200"
-                  onClick={loadMoreProducts}
-                >
-                  Load more
-                </button>
-              </div>
+                {/* Load More Button - Responsive */}
+                {visibleCount < filteredProducts.length && (
+                  <div className="flex justify-center mt-8 sm:mt-12">
+                    <button
+                      className="px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base border border-[#2A254B] text-[#2A254B] hover:bg-[#2A254B] hover:text-white transition duration-200"
+                      onClick={loadMoreProducts}
+                    >
+                      Load more products
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

@@ -97,56 +97,61 @@ export default function SearchPageContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-12">
-          <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+        <div className="mb-8 sm:mb-10 md:mb-12">
+          <form onSubmit={handleSearch} className="relative max-w-xl mx-auto">
             <input 
               type="text" 
               placeholder="Search products..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 text-lg border-2 border-blue-200 rounded-full focus:outline-none focus:ring-3 focus:ring-blue-500 shadow-md transition-all duration-300 ease-in-out"
+              className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 md:py-4 
+                text-sm sm:text-base md:text-lg 
+                border border-blue-200 rounded-full 
+                focus:outline-none focus:ring-2 focus:ring-blue-500 
+                shadow-sm transition-all duration-300 ease-in-out"
             />
             <button 
               type="submit" 
               className="absolute right-2 top-1/2 transform -translate-y-1/2"
             >
-              <Search className="text-blue-500 w-6 h-6" />
+              <Search className="text-blue-500 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
             </button>
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-500 w-6 h-6" />
+            <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-blue-500 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
           </form>
           {searchParams.get('q') && (
-            <p className="text-center text-gray-600 mt-4">
+            <p className="text-center text-xs sm:text-sm md:text-base text-gray-600 mt-2 sm:mt-3 md:mt-4">
               Showing results for: <span className="font-bold text-blue-600">{searchParams.get('q') || ''}</span>
             </p>
           )}
         </div>
 
         {products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-xl border border-gray-100">
-            <ShoppingBag className="h-24 w-24 text-blue-300 mb-6 animate-pulse" />
-            <p className="text-2xl text-gray-700 font-semibold mb-2">No products found</p>
-            <p className="text-gray-500 text-lg">Try searching with different keywords</p>
-            <p className="text-gray-400 mt-4 italic">Suggestions:
-              <span className="ml-2 text-blue-500">Try product name, category, or description</span>
+          <div className="flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 bg-white rounded-2xl shadow-xl border border-gray-100">
+            <ShoppingBag className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 text-blue-300 mb-4 sm:mb-5 md:mb-6 animate-pulse" />
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-700 font-semibold mb-2">No products found</p>
+            <p className="text-xs sm:text-sm md:text-base text-gray-500 text-center px-4">Try searching with different keywords</p>
+            <p className="text-xs sm:text-sm md:text-base text-gray-400 mt-2 sm:mt-3 md:mt-4 italic text-center px-4">
+              Suggestions:
+              <span className="ml-2 text-blue-500 block sm:inline">Try product name, category, or description</span>
             </p>
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-4 sm:mb-6 md:mb-8">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">
                 {products.length} Product{products.length !== 1 ? 's' : ''} Found
               </h2>
-              <div className="flex space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
                 <span>Sort by:</span>
-                <select className="border rounded px-2 py-1">
+                <select className="border rounded px-2 py-1 text-xs sm:text-sm">
                   <option>Relevance</option>
                   <option>Price: Low to High</option>
                   <option>Price: High to Low</option>
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
               {products.map((product) => (
                 <ProductCard 
                   key={product._id}

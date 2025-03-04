@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, ShoppingCart, CircleUserRound, Menu, ChevronDown, Heart } from 'lucide-react';
+import { Search, ShoppingCart, CircleUserRound, Menu, ChevronDown, Heart, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { client } from "@/sanity/lib/client";
 import { useRouter } from "next/navigation";
@@ -117,6 +117,10 @@ const Navbar = () => {
     setIsCategoriesDropdownOpen(!isCategoriesDropdownOpen);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   // Close search dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -186,119 +190,101 @@ const Navbar = () => {
         {/* Mobile Menu Icon */}
         <Menu
           className="w-6 h-6 text-[#2A254B] cursor-pointer md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={toggleMobileMenu}
         />
       </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`${isMenuOpen ? "block" : "hidden"} md:hidden bg-white w-full border-t`}
-      >
-        <div className="flex flex-col items-center py-4 space-y-4">
-          <Link href="/About" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            About
-          </Link>
-          <Link href="/ProductListing" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            Product Listing
-          </Link>
-          <Link href="/ContactUs" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            Contact Us
-          </Link>
-          <Link href="/Shopping" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            Shopping
-          </Link>
-          <Link href="/FAQ" className="text-[#726E8D] hover:text-[#2A254B] text-base">
-            FAQ
-          </Link>
-          {/* Mobile Categories */}
-          <div className="relative w-full text-center">
-            <div 
-              onClick={toggleCategoriesDropdown}
-              className="text-[#726E8D] hover:text-[#2A254B] text-base flex items-center justify-center cursor-pointer"
+      {/* Mobile Menu Popup - Small Screen Specific */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-white overflow-hidden md:hidden"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '100%', 
+            zIndex: 1000 
+          }}
+        >
+          {/* Close Button */}
+          <div className="absolute top-4 right-4 z-60">
+            <button 
+              onClick={toggleMobileMenu} 
+              className="text-gray-700 hover:text-gray-900 focus:outline-none"
             >
-              Categories 
-              <ChevronDown 
-                className={`ml-2 transition-transform duration-200 ${
-                  isCategoriesDropdownOpen ? 'rotate-180' : ''
-                }`} 
-                size={20} 
-              />
-            </div>
-            
-            {isCategoriesDropdownOpen && (
-              <div className="mt-2 space-y-2">
-                <Link href="/categories/ceramics" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Ceramics
-                </Link>
-                <Link href="/categories/plant-pots" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Plant Pots
-                </Link>
-                <Link href="/categories/tables" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Tables
-                </Link>
-                <Link href="/categories/chairs" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Chairs
-                </Link>
-                <Link href="/categories/crockery" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Crockery
-                </Link>
-                <Link href="/categories/tableware" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Tableware
-                </Link>
-                <Link href="/categories/cutlery" className="block text-[#726E8D] hover:text-[#2A254B] text-sm">
-                  Cutlery
-                </Link>
-              </div>
-            )}
+              <X className="h-6 w-6" />
+            </button>
           </div>
-          {/* Mobile Cart, Wishlist, Profile */}
-          <div className="flex justify-around items-center border-t pt-4">
-            <Link href="/cart" className="relative flex flex-col items-center">
-              <ShoppingCart size={24} />
-              <span className="text-xs mt-1">Cart</span>
-              {isClient && cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1">
-                  {cartCount}
-                </span>
-              )}
+
+          {/* Menu Content */}
+          <div className="flex flex-col items-center justify-center h-full space-y-6 px-4">
+            {/* Logo */}
+            <Link href="/" className="font-normal text-2xl text-[#2A254B]">
+          Avion
+        </Link>
+
+            {/* Navigation Links */}
+            <Link 
+              href="/" 
+              className="text-xl font-medium text-gray-800 hover:text-gray-600"
+              onClick={toggleMobileMenu}
+            >
+              Home
             </Link>
-            <Link href="/wishlist" className="relative flex flex-col items-center">
-              <Heart size={24} />
-              <span className="text-xs mt-1">Wishlist</span>
-              {isClient && wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#2A254B] text-white rounded-full text-xs px-1">
-                  {wishlistCount}
-                </span>
-              )}
+            <Link 
+              href="/ProductListing" 
+              className="text-xl font-medium text-gray-800 hover:text-gray-600"
+              onClick={toggleMobileMenu}
+            >
+              Products
             </Link>
-            <div className="flex flex-col items-center">
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" />
-                <span className="text-xs mt-1">Profile</span>
-              </SignedIn>
+            <Link 
+              href="/About" 
+              className="text-xl font-medium text-gray-800 hover:text-gray-600"
+              onClick={toggleMobileMenu}
+            >
+              About
+            </Link>
+            <Link 
+              href="/ContactUs" 
+              className="text-xl font-medium text-gray-800 hover:text-gray-600"
+              onClick={toggleMobileMenu}
+            >
+              Contact
+            </Link>
+
+            {/* Mobile Icons */}
+            <div className="flex items-center justify-center space-x-6 mt-6">
+              <button onClick={() => setIsSearchOpen(true)} className="text-gray-700 hover:text-gray-900">
+                <Search size={20} />
+              </button>
+              <Link href="/wishlist" className="relative text-gray-700 hover:text-gray-900">
+                <Heart size={20} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+              <Link href="/Shopping" className="relative text-gray-700 hover:text-gray-900">
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
               <SignedOut>
-                <SignInButton mode="modal">
-                  <div className="flex flex-col items-center">
-                    <CircleUserRound size={24} />
-                    <span className="text-xs mt-1">Login</span>
-                  </div>
-                </SignInButton>
+                <SignInButton />
               </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
             </div>
           </div>
-          {/* Mobile Authentication */}
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <span className="text-[#726E8D] hover:text-[#2A254B] text-base">
-                Login
-              </span>
-            </SignInButton>
-          </SignedOut>
         </div>
-      </div>
+      )}
 
       {/* Desktop Navigation */}
       <div className="hidden md:block w-full border-t">

@@ -2,7 +2,12 @@ export interface ProductType {
   _id: string;
   name: string;
   price: number;
-  description: string;
+  description?: string;
+  category?: string;
+  slug?: {
+    _type: string;
+    current: string;
+  } | string;
   imageUrl?: string;
   image?: {
     url: string;
