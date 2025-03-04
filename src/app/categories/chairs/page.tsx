@@ -9,7 +9,7 @@ export default function ChairsPage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="chairs"
+        categoryName="chairs"
         title="Chairs"
         description="Discover our range of comfortable and stylish chairs. From dining chairs to armchairs, find the perfect seating for your space."
       />

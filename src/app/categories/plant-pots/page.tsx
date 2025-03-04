@@ -9,9 +9,9 @@ export default function PlantPotsPage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="plant-pots"
+        categoryName="plant-pots"
         title="Plant Pots"
-        description="Discover our collection of beautifully crafted plant pots. From minimalist designs to ornate patterns, find the perfect home for your plants."
+        description="Bring life to your space with our curated collection of plant pots. From minimalist designs to vibrant statement pieces."
       />
       <Footer />
     </>

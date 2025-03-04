@@ -9,9 +9,9 @@ export default function CrockeryPage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="crockery"
+        categoryName="crockery"
         title="Crockery"
-        description="Explore our fine collection of crockery. From elegant dinner sets to everyday essentials, find pieces that elevate your dining experience."
+        description="Discover our elegant crockery collection. From everyday dining to special occasions, find the perfect pieces to complement your style."
       />
       <Footer />
     </>

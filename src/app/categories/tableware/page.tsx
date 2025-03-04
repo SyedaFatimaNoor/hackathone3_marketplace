@@ -9,9 +9,9 @@ export default function TablewarePage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="tableware"
+        categoryName="tableware"
         title="Tableware"
-        description="Discover our sophisticated tableware collection. From serving dishes to placemats, find everything you need for a well-dressed table."
+        description="Elevate your dining experience with our exquisite tableware collection. From elegant plates to sophisticated serving sets."
       />
       <Footer />
     </>

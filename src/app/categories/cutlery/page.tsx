@@ -9,9 +9,9 @@ export default function CutleryPage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="cutlery"
+        categoryName="cutlery"
         title="Cutlery"
-        description="Browse our premium cutlery collection. From everyday essentials to special occasion sets, find cutlery that adds elegance to your dining."
+        description="Elevate your dining experience with our premium cutlery sets. Crafted with precision and style."
       />
       <Footer />
     </>

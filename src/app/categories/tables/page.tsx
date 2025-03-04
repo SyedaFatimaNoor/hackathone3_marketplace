@@ -9,9 +9,9 @@ export default function TablesPage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="tables"
+        categoryName="tables"
         title="Tables"
-        description="Browse our collection of elegant tables. From dining to coffee tables, find furniture that combines style with functionality."
+        description="Discover our range of stylish and functional tables. From dining tables to coffee tables, find the perfect centerpiece for your space."
       />
       <Footer />
     </>
