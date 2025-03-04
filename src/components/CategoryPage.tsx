@@ -5,14 +5,14 @@ import Image from 'next/image';
 import { client } from "@/sanity/lib/client";
 import { Product } from "@/types/products";
 import ProductCard from './ProductCard';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 
 interface CategoryPageProps {
   categoryName: string;
+  title?: string;
+  description?: string;
 }
 
-export default function CategoryPage({ categoryName }: CategoryPageProps) {
+export default function CategoryPage({ categoryName, title, description }: CategoryPageProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +50,6 @@ export default function CategoryPage({ categoryName }: CategoryPageProps) {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen bg-white">
         
         {/* Hero Section */}
@@ -85,6 +84,8 @@ export default function CategoryPage({ categoryName }: CategoryPageProps) {
 
         {/* Product Grid */}
         <div className="container mx-auto px-4 py-12 md:py-16">
+          {title && <h1 className="text-3xl font-bold mb-4">{title}</h1>}
+          {description && <p className="text-gray-600 mb-6">{description}</p>}
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-normal text-[#2A254B]">
               {categoryName || 'Category'} Products
@@ -121,9 +122,6 @@ export default function CategoryPage({ categoryName }: CategoryPageProps) {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 }
-      
-     

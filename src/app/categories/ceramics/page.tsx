@@ -9,7 +9,7 @@ export default function CeramicsPage() {
       <Banner />
       <Navbar />
       <CategoryPage 
-        category="ceramics"
+        categoryName="ceramics"
         title="Ceramics"
         description="Explore our handcrafted ceramic collection. Each piece is uniquely designed and carefully made to bring artistry to your home."
       />

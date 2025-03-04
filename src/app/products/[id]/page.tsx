@@ -270,7 +270,7 @@ export default function SingleProductPage({ params }: { params: { id: string } }
             Product Not Found
           </p>
           <p className="text-base text-gray-600 mt-2 max-w-md mx-auto">
-            We couldn't find the product you're looking for. It may have been removed or the link is incorrect.
+            We couldn&apos;t find the product you&apos;re looking for. It may have been removed or the link is incorrect.
           </p>
           <div className="mt-6">
             <Link 
@@ -416,7 +416,7 @@ export default function SingleProductPage({ params }: { params: { id: string } }
       <Footer />
       {notification && <Notification message={notification} onClose={closeNotification} />}
       <div className="related-products">
-        <h2>You'll Love These Products</h2>
+        <h2>You&apos;ll Love These Products</h2>
         <p>Discover items that complement your style and elevate your space.</p>
         {relatedProducts.length > 0 && relatedProducts.map((relatedProduct) => (
           <div key={relatedProduct._id}>
