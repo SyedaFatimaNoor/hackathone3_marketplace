@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { client } from "@/sanity/lib/client";
 import { Product } from '@/types/products';
 import { urlFor } from "@/sanity/lib/image";
@@ -23,7 +23,7 @@ interface SanityImageObject {
 }
 
 export default function SingleProductPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = params;  // Keep original 'id' for potential future use
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -33,7 +33,9 @@ export default function SingleProductPage({ params }: { params: { id: string } }
   const [notification, setNotification] = useState<string | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
-  const fetchRelatedProducts = async (category: string, currentProductId?: string) => {
+  const fetchRelatedProducts = useCallback(async (category: string) => {
+    if (!product) return [];
+
     try {
       const query = `*[_type == "product" && category == $category && _id != $currentProductId] | order(price asc) [0...4] {
         _id,
@@ -45,7 +47,7 @@ export default function SingleProductPage({ params }: { params: { id: string } }
 
       const related = await client.fetch(query, { 
         category, 
-        currentProductId: currentProductId || product?._id 
+        currentProductId: product._id 
       });
 
       return related;
@@ -53,12 +55,12 @@ export default function SingleProductPage({ params }: { params: { id: string } }
       console.error('Error fetching related products:', error);
       return [];
     }
-  };
+  }, [product]);
 
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        console.log("Attempting to fetch product with ID:", params.id);
+        console.log("Attempting to fetch product with ID:", id);
         setIsLoading(true);
         
         const query = `*[_type == "product" && _id == $id][0]{
@@ -84,14 +86,14 @@ export default function SingleProductPage({ params }: { params: { id: string } }
           }
         }`;
 
-        const fetchedProduct: Product | null = await client.fetch(query, { id: params.id });
+        const fetchedProduct: Product | null = await client.fetch(query, { id });
         
         console.log("Fetched Product Details:", fetchedProduct);
         
         if (fetchedProduct) {
           setProduct(fetchedProduct);
         } else {
-          console.error(`No product found with ID: ${params.id}`);
+          console.error(`No product found with ID: ${id}`);
         }
       } catch (error) {
         console.error('Error fetching product:', error);
@@ -100,10 +102,10 @@ export default function SingleProductPage({ params }: { params: { id: string } }
       }
     };
 
-    if (params.id) {
+    if (id) {
       loadProduct();
     }
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     if (product) {
@@ -410,13 +412,19 @@ export default function SingleProductPage({ params }: { params: { id: string } }
             </div>
           </div>
         </div>
-        <div className="product-details">
-          <h2>You&apos;ll Love These Products</h2>
-          <p>Discover items that complement your style and elevate your space.</p>
-        </div>
       </div>
       <Footer />
       {notification && <Notification message={notification} onClose={closeNotification} />}
+      <div className="related-products">
+        <h2>You'll Love These Products</h2>
+        <p>Discover items that complement your style and elevate your space.</p>
+        {relatedProducts.length > 0 && relatedProducts.map((relatedProduct) => (
+          <div key={relatedProduct._id}>
+            {/* Render related product details */}
+            <p>{relatedProduct.name}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
